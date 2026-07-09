@@ -17,6 +17,21 @@
   </style>
 </head>
 <body>
+  <script>
+    // Debug em dispositivo sem devtools: qualquer erro vira texto na tela.
+    function showErr(msg) {
+      const pre = document.createElement('pre');
+      pre.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99;background:#400;color:#fff;padding:8px;font-size:11px;white-space:pre-wrap;margin:0';
+      pre.textContent = msg;
+      document.body.appendChild(pre);
+    }
+    addEventListener('error', function (e) {
+      showErr('ERRO: ' + (e.message || e.type) + '\n' + (e.filename || '') + ':' + (e.lineno || ''));
+    });
+    addEventListener('unhandledrejection', function (e) {
+      showErr('PROMISE: ' + ((e.reason && (e.reason.stack || e.reason.message)) || e.reason));
+    });
+  </script>
   <div id="fluid"></div>
   <div id="hud">fps: <span id="fps">–</span></div>
   <script type="module" src="./main.ts"></script>
