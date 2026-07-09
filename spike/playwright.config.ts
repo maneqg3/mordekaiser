@@ -15,7 +15,8 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm dev',
-    url: 'http://localhost:5173',
+    // /a-scroll/ e não a raiz: o spike não tem index.html raiz e 404 não conta como "pronto".
+    url: 'http://localhost:5173/a-scroll/',
     reuseExistingServer: true,
     timeout: 60_000,
   },
