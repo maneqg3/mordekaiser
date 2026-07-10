@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Hero } from '@/components/hero/Hero';
 import type { ChampionData } from '@/lib/ddragon';
 
 export default async function Home({
@@ -14,21 +15,8 @@ export default async function Home({
 
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
-        <h1
-          aria-label="Mordekaiser"
-          className="type-display leading-[0.85] tracking-tight"
-          style={{ fontSize: 'var(--text-hero)' }}
-        >
-          <span aria-hidden className="block">
-            MORDE
-          </span>
-          <span aria-hidden className="block">
-            KAISER
-          </span>
-        </h1>
-        <p className="type-blackletter text-2xl">{champion.title}</p>
-        <p>{t('tagline')}</p>
+      <main>
+        <Hero title={champion.title} />
       </main>
       <footer className="flex flex-col items-center gap-2 px-6 py-8 text-center text-sm">
         <p className="type-mono">
