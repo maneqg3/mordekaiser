@@ -1,0 +1,101 @@
+/* Camada de movimento: CSS scroll-driven animations, zero JS (spec Fase 2 §5).
+   TUDO aqui vive sob reduced-motion:no-preference E @supports — sem o
+   @supports, navegador sem animation-timeline rodaria as animações como
+   animações temporais na carga (reveals disparando todos de uma vez e
+   conteúdo oculto por fill-mode). */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Flutuação do scroll cue do hero: animação temporal comum, não depende
+     de scroll-driven — fica fora do @supports de propósito. */
+  .scroll-cue {
+    animation: cue-float 2.4s ease-in-out infinite;
+  }
+  @keyframes cue-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(0.5rem);
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    /* Transição de cor entre atos: a primeira seção de cada ato interpola
+       seus tokens DAS cores do ato anterior PARA as suas enquanto entra no
+       viewport. Hexes duplicados de tokens.css (var() não é permitido em
+       keyframe da propriedade animada). */
+    @keyframes act-i-to-ii {
+      from {
+        --bg: #0f0e0c;
+        --fg: #d6cfc0;
+        --accent: #8c2a1e;
+      }
+      to {
+        --bg: #0c0e0e;
+        --fg: #a8b4af;
+        --accent: #7effb6;
+      }
+    }
+    @keyframes act-ii-to-iii {
+      from {
+        --bg: #0c0e0e;
+        --fg: #a8b4af;
+        --accent: #7effb6;
+      }
+      to {
+        --bg: #0a0b0b;
+        --fg: #e8f2ec;
+        --accent: #7effb6;
+      }
+    }
+    @keyframes act-iii-to-iv {
+      from {
+        --bg: #0a0b0b;
+        --fg: #e8f2ec;
+        --accent: #7effb6;
+      }
+      to {
+        --bg: #050807;
+        --fg: #e8f2ec;
+        --accent: #7effb6;
+      }
+    }
+
+    /* Só a PRIMEIRA seção de cada ato anima (grey-waste, forge, realm).
+       As seguintes do mesmo ato (arsenal, incarnations, credits) recebem
+       .act-static e ficam na cor sólida de [data-act] (tokens.css). */
+    section[data-act='ii'] {
+      animation: act-i-to-ii linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+    section[data-act='iii']:not(.act-static) {
+      animation: act-ii-to-iii linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+    section[data-act='iv']:not(.act-static) {
+      animation: act-iii-to-iv linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+
+    /* Reveal de conteúdo na entrada de cada bloco. */
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 45%;
+    }
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(2rem);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+}
