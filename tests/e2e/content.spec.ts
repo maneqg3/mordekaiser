@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // Cresce a cada task: 3 atos (Task 4), depois arsenal/realm/incarnations/credits.
-const SECTION_HEADINGS: string[] = [];
+const SECTION_HEADINGS: string[] = ['wildlands', 'grey-waste', 'forge'];
 
 for (const locale of ['en', 'pt-br']) {
   test(`/${locale}: hero e seções renderizam`, async ({ page }) => {

@@ -1,4 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { ActForge } from '@/components/act-forge/ActForge';
+import { ActGreyWaste } from '@/components/act-grey-waste/ActGreyWaste';
+import { ActWildlands } from '@/components/act-wildlands/ActWildlands';
 import { Hero } from '@/components/hero/Hero';
 import type { ChampionData } from '@/lib/ddragon';
 
@@ -17,6 +20,9 @@ export default async function Home({
     <>
       <main>
         <Hero title={champion.title} />
+        <ActWildlands />
+        <ActGreyWaste />
+        <ActForge />
       </main>
       <footer className="flex flex-col items-center gap-2 px-6 py-8 text-center text-sm">
         <p className="type-mono">
