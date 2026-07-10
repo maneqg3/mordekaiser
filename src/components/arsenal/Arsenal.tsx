@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import type { ChampionData } from '@/lib/ddragon';
 
@@ -53,11 +52,14 @@ export async function Arsenal({ champion }: { champion: ChampionData }) {
           {abilities.map((ability) => (
             <article key={ability.name} className="ability-card flex flex-col gap-3 p-6">
               <div className="flex items-center gap-4">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element -- next/image estoura o teto de bundle (spec §9) */}
+                <img
                   src={`/champion/${ability.icon}`}
-                  alt={ability.name}
+                  alt=""
                   width={64}
                   height={64}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div>
                   <p className="act-kicker">{ability.label}</p>

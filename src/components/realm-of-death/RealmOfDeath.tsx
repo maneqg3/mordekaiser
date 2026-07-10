@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { LoreSection } from '@/components/ui/LoreSection';
 import type { ChampionData } from '@/lib/ddragon';
@@ -19,7 +18,15 @@ export async function RealmOfDeath({ champion }: { champion: ChampionData }) {
       <div aria-hidden className="portal-ring" />
       <article className="ability-card flex flex-col gap-3 p-6">
         <div className="flex items-center gap-4">
-          <Image src={`/champion/${r.icon}`} alt={r.name} width={64} height={64} />
+          {/* eslint-disable-next-line @next/next/no-img-element -- next/image estoura o teto de bundle (spec §9) */}
+          <img
+            src={`/champion/${r.icon}`}
+            alt=""
+            width={64}
+            height={64}
+            loading="lazy"
+            decoding="async"
+          />
           <div>
             <p className="act-kicker">{t('ultimateLabel')}</p>
             <h3 className="type-display text-xl">{r.name}</h3>

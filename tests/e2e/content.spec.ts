@@ -8,6 +8,7 @@ const SECTION_HEADINGS: string[] = [
   'forge',
   'arsenal',
   'realm',
+  'incarnations',
 ];
 
 for (const locale of ['en', 'pt-br']) {
@@ -35,4 +36,13 @@ test('/en: reino da morte mostra o r do data dragon', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: en.spells[3].name }),
   ).toBeVisible();
+});
+
+test('/en: galeria tem 14 skins nomeadas', async ({ page }) => {
+  await page.goto('/en');
+  const figures = page.locator(
+    'section[aria-labelledby="incarnations-heading"] figure',
+  );
+  await expect(figures).toHaveCount(14);
+  await expect(figures.first()).toContainText('Mordekaiser');
 });

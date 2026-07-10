@@ -70,6 +70,14 @@ export function parseChampion(json: unknown): ChampionResponse {
   return result.data;
 }
 
+/** A Riot devolve a skin base como "default"; a galeria mostra o nome do campeão. */
+export function skinDisplayName(
+  skin: { num: number; name: string },
+  championName: string,
+): string {
+  return skin.name === 'default' ? championName : skin.name;
+}
+
 export function pickChampionData(res: ChampionResponse): ChampionData {
   const champion = res.data.Mordekaiser;
   return {

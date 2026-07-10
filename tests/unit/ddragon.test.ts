@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
-import { parseChampion, pickChampionData } from '@/lib/ddragon';
+import { parseChampion, pickChampionData, skinDisplayName } from '@/lib/ddragon';
 
 const fixture: unknown = JSON.parse(
   readFileSync('tests/fixtures/mordekaiser.en.json', 'utf8'),
@@ -103,5 +103,19 @@ describe('pickChampionData', () => {
 
     const { skins } = pickChampionData(parsed);
     expect(skins.map((skin) => skin.num)).toEqual([0, 1]);
+  });
+});
+
+describe('skinDisplayName', () => {
+  test('devolve o nome do campeão para a skin base "default"', () => {
+    expect(skinDisplayName({ num: 0, name: 'default' }, 'Mordekaiser')).toBe(
+      'Mordekaiser',
+    );
+  });
+
+  test('mantém o nome de skins normais', () => {
+    expect(
+      skinDisplayName({ num: 1, name: 'Dragon Knight Mordekaiser' }, 'Mordekaiser'),
+    ).toBe('Dragon Knight Mordekaiser');
   });
 });
