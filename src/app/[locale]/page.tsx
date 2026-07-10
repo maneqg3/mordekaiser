@@ -12,7 +12,11 @@ export default async function Home({
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-6">
-        <h1 aria-label="Mordekaiser">
+        <h1
+          aria-label="Mordekaiser"
+          className="type-display leading-[0.85] tracking-tight"
+          style={{ fontSize: 'var(--text-hero)' }}
+        >
           <span aria-hidden className="block">
             MORDE
           </span>

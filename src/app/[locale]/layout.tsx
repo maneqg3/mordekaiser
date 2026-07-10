@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { blackletter, body, display, mono } from '@/app/fonts';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
 
@@ -30,7 +31,10 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale}>
+    <html
+      lang={locale}
+      className={`${display.variable} ${blackletter.variable} ${body.variable} ${mono.variable}`}
+    >
       <body>{children}</body>
     </html>
   );

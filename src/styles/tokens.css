@@ -1,0 +1,43 @@
+@property --bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0f0e0c;
+}
+@property --fg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #d6cfc0;
+}
+@property --accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #8c2a1e;
+}
+
+/* Ato I — Terras Selvagens (default). Calor = vida; o verde não existe aqui. */
+:root {
+  --bg: #0f0e0c;
+  --fg: #d6cfc0;
+  --accent: #8c2a1e;
+}
+
+/* Ato II — Descampado Cinzento. O verde nasce fraco (acento usado a 15% de alpha). */
+[data-act='ii'] {
+  --bg: #0c0e0e;
+  --fg: #a8b4af;
+  --accent: #7effb6;
+}
+
+/* Ato III — A Forja. */
+[data-act='iii'] {
+  --bg: #0a0b0b;
+  --fg: #e8f2ec;
+  --accent: #7effb6;
+}
+
+/* Ato IV — Reino da Morte. */
+[data-act='iv'] {
+  --bg: #050807;
+  --fg: #e8f2ec;
+  --accent: #7effb6;
+}
