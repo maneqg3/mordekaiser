@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "title": "Mordekaiser — the Iron Revenant",
+    "description": "A cinematic tribute to Mordekaiser, the Iron Revenant of League of Legends."
+  },
+  "home": {
+    "tagline": "Death is not the end of ambition.",
+    "patchLabel": "Data Dragon patch {version}",
+    "disclaimer": "Mordekaiser and League of Legends are creations of Riot Games. This unofficial fan project follows Riot Games' \"Legal Jibber Jabber\" policy. Riot Games does not endorse or sponsor this project."
+  }
+}

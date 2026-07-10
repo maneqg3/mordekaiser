@@ -3,3 +3,6 @@ allowBuilds:
   sharp: true
   # resolver nativo do eslint-plugin-import
   unrs-resolver: true
+  # transitivas do next-intl; ambas publicam prebuilds, não precisam compilar
+  '@parcel/watcher': false
+  '@swc/core': false
