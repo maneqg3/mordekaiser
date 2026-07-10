@@ -136,12 +136,12 @@ Números atuais: **16 testes unitários**, **96% de cobertura de statements**, *
 
 ## Roadmap
 
-- [x] **Fase 0** — Spike de derrisco. Uma simulação de fluido em WebGL e um parallax por depth map convivem a 60 fps num iPhone real? Convivem. [Resultados](./docs/superpowers/spikes/2026-07-09-fase-0-resultados.md).
+- [x] **Fase 0** — Spike de derrisco. Uma simulação de fluido em WebGL e um parallax por depth map convivem a 60 fps num iPhone real? Convivem — o código exploratório que provou isso vive na branch [`spike/fase-0`](https://github.com/maneqg3/mordekaiser/tree/spike/fase-0), preservado como registro do experimento.
 - [x] **Fase 1** — O esqueleto. Rotas, i18n, tokens de cor, tipografia, o pipeline do Data Dragon e todos os portões acima.
 - [ ] **Fase 2** — O cinema. Narrativa guiada por scroll pelos quatro atos, fluido em WebGL, parallax de profundidade e a vitrine de habilidades.
 - [ ] **Fase 3** — Polimento. Refino de movimento, paridade com `prefers-reduced-motion`, orçamentos de performance sob carga.
 
-As decisões de design vivem em [`docs/superpowers/specs/`](./docs/superpowers/specs/); os planos de implementação que produziram cada fase vivem em [`docs/superpowers/plans/`](./docs/superpowers/plans/).
+Cada fase nasceu de uma spec escrita e um plano de implementação antes de uma linha de código. O trabalho exploratório sobrevive na branch [`spike/fase-0`](https://github.com/maneqg3/mordekaiser/tree/spike/fase-0).
 
 ## Stack
 

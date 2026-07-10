@@ -136,12 +136,12 @@ Current numbers: **16 unit tests**, **96% statement coverage**, **142 kB** of gz
 
 ## Roadmap
 
-- [x] **Phase 0** — De-risking spike. Can a WebGL fluid simulation and a depth-mapped parallax coexist at 60 fps on a real iPhone? Yes. [Findings](./docs/superpowers/spikes/2026-07-09-fase-0-resultados.md).
+- [x] **Phase 0** — De-risking spike. Can a WebGL fluid simulation and a depth-mapped parallax coexist at 60 fps on a real iPhone? Yes — the exploratory code that proved it lives on the [`spike/fase-0`](https://github.com/maneqg3/mordekaiser/tree/spike/fase-0) branch, kept as a record of the experiment.
 - [x] **Phase 1** — The skeleton. Routing, i18n, colour tokens, typography, the Data Dragon pipeline, and every quality gate above.
 - [ ] **Phase 2** — The cinema. Scroll-driven narrative through the four acts, WebGL fluid, depth parallax, and the ability showcase.
 - [ ] **Phase 3** — Polish. Motion refinement, reduced-motion parity, performance budgets under load.
 
-Design decisions live in [`docs/superpowers/specs/`](./docs/superpowers/specs/); the implementation plans that produced each phase live in [`docs/superpowers/plans/`](./docs/superpowers/plans/).
+Each phase was built from a written spec and an implementation plan before a line of code was touched. The exploratory groundwork survives on the [`spike/fase-0`](https://github.com/maneqg3/mordekaiser/tree/spike/fase-0) branch.
 
 ## Tech stack
 
