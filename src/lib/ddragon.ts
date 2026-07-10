@@ -24,7 +24,14 @@ export const ChampionResponseSchema = z.object({
         image: z.object({ full: z.string() }),
       }),
       spells: z.array(SpellSchema).length(4),
-      skins: z.array(z.object({ num: z.number(), name: z.string() })),
+      // `parentSkin` só existe em chromas — a Riot não publica splash para eles.
+      skins: z.array(
+        z.object({
+          num: z.number(),
+          name: z.string(),
+          parentSkin: z.number().optional(),
+        }),
+      ),
     }),
   }),
 });
@@ -85,6 +92,8 @@ export function pickChampionData(res: ChampionResponse): ChampionData {
       rangeBurn: spell.rangeBurn,
       icon: spell.image.full,
     })),
-    skins: champion.skins.map((skin) => ({ num: skin.num, name: skin.name })),
+    skins: champion.skins
+      .filter((skin) => skin.parentSkin === undefined)
+      .map((skin) => ({ num: skin.num, name: skin.name })),
   };
 }

@@ -56,7 +56,14 @@
       ],
       "skins": [
         { "id": "82000", "num": 0, "name": "default", "chromas": false },
-        { "id": "82001", "num": 1, "name": "Dragon Knight Mordekaiser", "chromas": false }
+        { "id": "82001", "num": 1, "name": "Dragon Knight Mordekaiser", "chromas": true },
+        {
+          "id": "82002",
+          "num": 2,
+          "name": "Dragon Knight Mordekaiser (Ruby)",
+          "chromas": false,
+          "parentSkin": 1
+        }
       ]
     }
   }

@@ -96,4 +96,12 @@ describe('pickChampionData', () => {
       ],
     });
   });
+
+  test('descarta chromas — a Riot não publica splash para eles', () => {
+    const parsed = parseChampion(fixture);
+    expect(parsed.data.Mordekaiser.skins).toHaveLength(3);
+
+    const { skins } = pickChampionData(parsed);
+    expect(skins.map((skin) => skin.num)).toEqual([0, 1]);
+  });
 });

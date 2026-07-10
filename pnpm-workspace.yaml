@@ -6,3 +6,5 @@ allowBuilds:
   # transitivas do next-intl; ambas publicam prebuilds, não precisam compilar
   '@parcel/watcher': false
   '@swc/core': false
+  # transitiva do tsx: o script de install linka o binário nativo da plataforma
+  esbuild: true
