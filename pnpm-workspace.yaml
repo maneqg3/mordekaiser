@@ -1,0 +1,5 @@
+allowBuilds:
+  # otimização de imagens do next em build/produção
+  sharp: true
+  # resolver nativo do eslint-plugin-import
+  unrs-resolver: true

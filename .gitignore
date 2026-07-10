@@ -4,4 +4,22 @@ out/
 .env*.local
 .vercel
 .superpowers/
+
+# gerado no build pelo script do Data Dragon
 public/champion/
+src/data/
+
+# saída de testes
+coverage/
+playwright-report/
+test-results/
+
+# código descartável da Fase 0 — vive na branch spike/fase-0
+spike/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# misc
+.DS_Store
