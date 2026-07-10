@@ -1,0 +1,63 @@
+{
+  "type": "champion",
+  "version": "26.13.1",
+  "data": {
+    "Mordekaiser": {
+      "id": "Mordekaiser",
+      "name": "Mordekaiser",
+      "title": "the Iron Revenant",
+      "lore": "Twice slain and thrice born, Mordekaiser is a brutal warlord from a foregone epoch.",
+      "passive": {
+        "name": "Darkness Rise",
+        "description": "Mordekaiser gains a powerful damage aura and movement speed after landing 3 attacks or spells against champions.",
+        "image": { "full": "MordekaiserPassive.png" }
+      },
+      "spells": [
+        {
+          "id": "MordekaiserQ",
+          "name": "Obliterate",
+          "description": "Mordekaiser smashes the ground with his mace.",
+          "tooltip": "Smash the ground dealing {{ totaldamage }} damage.",
+          "cooldownBurn": "9/8.25/7.5/6.75/6",
+          "costBurn": "0",
+          "rangeBurn": "625",
+          "image": { "full": "MordekaiserQ.png" }
+        },
+        {
+          "id": "MordekaiserW",
+          "name": "Indestructible",
+          "description": "Mordekaiser stores damage to form a shield.",
+          "tooltip": "Gain a shield of {{ shieldamount }}.",
+          "cooldownBurn": "12/11/10/9/8",
+          "costBurn": "0",
+          "rangeBurn": "self",
+          "image": { "full": "MordekaiserW.png" }
+        },
+        {
+          "id": "MordekaiserE",
+          "name": "Death's Grasp",
+          "description": "Mordekaiser pulls enemies toward him.",
+          "tooltip": "Pull enemies dealing {{ totaldamage }} damage.",
+          "cooldownBurn": "18/16.5/15/13.5/12",
+          "costBurn": "0",
+          "rangeBurn": "900",
+          "image": { "full": "MordekaiserE.png" }
+        },
+        {
+          "id": "MordekaiserR",
+          "name": "Realm of Death",
+          "description": "Mordekaiser drags his victim to the Death Realm.",
+          "tooltip": "Banish a champion for {{ rduration }} seconds.",
+          "cooldownBurn": "140/120/100",
+          "costBurn": "0",
+          "rangeBurn": "650",
+          "image": { "full": "MordekaiserR.png" }
+        }
+      ],
+      "skins": [
+        { "id": "82000", "num": 0, "name": "default", "chromas": false },
+        { "id": "82001", "num": 1, "name": "Dragon Knight Mordekaiser", "chromas": false }
+      ]
+    }
+  }
+}
