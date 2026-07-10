@@ -9,6 +9,7 @@ const SECTION_HEADINGS: string[] = [
   'arsenal',
   'realm',
   'incarnations',
+  'credits',
 ];
 
 for (const locale of ['en', 'pt-br']) {
@@ -37,6 +38,20 @@ test('/en: reino da morte mostra o r do data dragon', async ({ page }) => {
     page.getByRole('heading', { name: en.spells[3].name }),
   ).toBeVisible();
 });
+
+for (const locale of ['en', 'pt-br']) {
+  test(`/${locale}: créditos têm disclaimer da Riot e links`, async ({ page }) => {
+    await page.goto(`/${locale}`);
+    const credits = page.locator('footer[aria-labelledby="credits-heading"]');
+    await expect(credits).toContainText('Riot Games');
+    await expect(
+      credits.getByRole('link', { name: 'GitHub' }),
+    ).toHaveAttribute('href', 'https://github.com/maneqg3/mordekaiser');
+    await expect(
+      credits.getByRole('link', { name: 'LinkedIn' }),
+    ).toHaveAttribute('href', 'https://www.linkedin.com/in/gabriel-luis-gomes');
+  });
+}
 
 test('/en: galeria tem 14 skins nomeadas', async ({ page }) => {
   await page.goto('/en');
