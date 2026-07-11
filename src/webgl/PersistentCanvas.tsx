@@ -6,6 +6,7 @@ import { Component, Suspense, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { gateStore } from '@/lib/gate-progress';
 import { HeroDepth } from '@/webgl/scenes/HeroDepth';
+import { FluidFog } from '@/webgl/scenes/FluidFog';
 
 /** Cena que quebrar (asset 404, shader inválido) vira nada — o site fica. */
 class SceneErrorBoundary extends Component<
@@ -70,6 +71,9 @@ export default function PersistentCanvas() {
         <Suspense fallback={null}>
           <View track={heroTrack}>
             <HeroDepth track={heroTrack} />
+          </View>
+          <View track={fogTrack}>
+            <FluidFog track={fogTrack} />
           </View>
         </Suspense>
       </SceneErrorBoundary>
