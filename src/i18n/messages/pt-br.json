@@ -6,6 +6,60 @@
   "home": {
     "tagline": "A morte não é o fim da ambição.",
     "patchLabel": "Patch {version} do Data Dragon",
-    "disclaimer": "Mordekaiser e League of Legends são criações da Riot Games. Este é um projeto de fã não oficial sob a política \"Legal Jibber Jabber\" da Riot Games. A Riot Games não endossa nem patrocina este projeto."
+    "disclaimer": "Mordekaiser e League of Legends são criações da Riot Games. Este é um projeto de fã não oficial sob a política \"Legal Jibber Jabber\" da Riot Games. A Riot Games não endossa nem patrocina este projeto.",
+    "scrollCue": "Desça"
+  },
+  "wildlands": {
+    "kicker": "Ato I",
+    "title": "As Terras Selvagens",
+    "body": [
+      "Antes do ferro, houve carne. Sahn-Uzal cavalgava à frente de uma horda que devorou as terras selvagens do norte, e nenhuma muralha, nenhum exército, nenhum deus das planícies foi capaz de detê-lo.",
+      "Ele queimou e conquistou não por ouro, mas por fé. Os xamãs prometiam que os maiores guerreiros banqueteariam para sempre no Salão dos Ossos — e nenhum guerreiro era maior que Sahn-Uzal. Disso, ele tinha certeza."
+    ]
+  },
+  "greyWaste": {
+    "kicker": "Ato II",
+    "title": "O Descampado Cinzento",
+    "body": [
+      "A morte veio, como vem para todos. Mas não havia salão, nem banquete, nem recompensa. Apenas um descampado cinzento sem horizonte, envolto em névoa etérea e assombrado por sussurros discordantes.",
+      "O calor da vida drenou dele. Almas menores se dissolviam na névoa ao seu redor — mas a raiva é um tipo de combustível, e Sahn-Uzal recusou-se a desvanecer."
+    ]
+  },
+  "forge": {
+    "kicker": "Ato III",
+    "title": "A Forja",
+    "body": [
+      "Sem carne nem osso, impôs sua vontade através do véu. Feiticeiros prenderam seu espírito em placas de metal negro, forjadas à imagem de sua antiga armadura.",
+      "Ele se ergueu como um revenã de ferro e ódio, e falou seu nome-espírito em Ochnun, a língua dos mortos:"
+    ],
+    "spiritName": "Mordekaiser"
+  },
+  "arsenal": {
+    "title": "O Arsenal",
+    "passiveLabel": "Passiva",
+    "qLabel": "Q",
+    "wLabel": "W",
+    "eLabel": "E",
+    "cooldownLabel": "Recarga",
+    "costLabel": "Custo",
+    "rangeLabel": "Alcance"
+  },
+  "realm": {
+    "kicker": "Ato IV",
+    "title": "O Reino da Morte",
+    "body": [
+      "Duas vezes morto e três vezes nascido, ele não teme mais o descampado cinzento. Ele o governa.",
+      "Pela força da vontade, Mordekaiser criou seu próprio Reino da Morte — um campo de batalha em outra dimensão, que existe para ele e sua presa, e para mais ninguém. Quem é arrastado para dentro enfrenta o Revenã de Ferro completamente sozinho."
+    ],
+    "ultimateLabel": "R — Suprema"
+  },
+  "incarnations": {
+    "title": "Encarnações",
+    "subtitle": "Quatorze formas do Revenã de Ferro."
+  },
+  "credits": {
+    "title": "Créditos",
+    "fontsLabel": "Tipografias",
+    "sourceLabel": "Código"
   }
 }

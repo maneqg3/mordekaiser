@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "e2e": "playwright test",
-    "check:bundle": "node scripts/check-bundle.mjs"
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "lighthouse": "lhci autorun"
   },
   "dependencies": {
     "next": "16.2.10",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

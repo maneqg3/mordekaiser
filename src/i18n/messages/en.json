@@ -6,6 +6,60 @@
   "home": {
     "tagline": "Death is not the end of ambition.",
     "patchLabel": "Data Dragon patch {version}",
-    "disclaimer": "Mordekaiser and League of Legends are creations of Riot Games. This unofficial fan project follows Riot Games' \"Legal Jibber Jabber\" policy. Riot Games does not endorse or sponsor this project."
+    "disclaimer": "Mordekaiser and League of Legends are creations of Riot Games. This unofficial fan project follows Riot Games' \"Legal Jibber Jabber\" policy. Riot Games does not endorse or sponsor this project.",
+    "scrollCue": "Descend"
+  },
+  "wildlands": {
+    "kicker": "Act I",
+    "title": "The Wildlands",
+    "body": [
+      "Before the iron, there was flesh. Sahn-Uzal rode at the head of a horde that devoured the northern wildlands, and no wall, no army, no god of the plains could slow him.",
+      "He burned and conquered not for gold, but for faith. The shamans had promised that the greatest warriors would feast forever in the Hall of Bones — and no warrior was greater than Sahn-Uzal. Of that, he was certain."
+    ]
+  },
+  "greyWaste": {
+    "kicker": "Act II",
+    "title": "The Grey Waste",
+    "body": [
+      "Death came, as it comes for all. But there was no hall, no feast, no reward. Only a grey waste without horizon, wrapped in aether-mist and haunted by discordant whispers.",
+      "The heat of life drained out of him. Lesser souls dissolved into the fog around him — but rage is a kind of fuel, and Sahn-Uzal refused to fade."
+    ]
+  },
+  "forge": {
+    "kicker": "Act III",
+    "title": "The Forge",
+    "body": [
+      "Without flesh or bone, he bent his will across the veil. Sorcerers bound his spirit into plates of black metal, forged in the image of his old armor.",
+      "He rose as a revenant of iron and hate, and spoke his spirit-name in Ochnun, the tongue of the dead:"
+    ],
+    "spiritName": "Mordekaiser"
+  },
+  "arsenal": {
+    "title": "The Arsenal",
+    "passiveLabel": "Passive",
+    "qLabel": "Q",
+    "wLabel": "W",
+    "eLabel": "E",
+    "cooldownLabel": "Cooldown",
+    "costLabel": "Cost",
+    "rangeLabel": "Range"
+  },
+  "realm": {
+    "kicker": "Act IV",
+    "title": "The Death Realm",
+    "body": [
+      "Twice slain and thrice born, he no longer fears the grey waste. He rules it.",
+      "By force of will alone, Mordekaiser carved out his own Death Realm — a battlefield in another dimension that exists for him and his prey, and no one else. Those dragged inside face the Iron Revenant utterly alone."
+    ],
+    "ultimateLabel": "R — Ultimate"
+  },
+  "incarnations": {
+    "title": "Incarnations",
+    "subtitle": "Fourteen forms of the Iron Revenant."
+  },
+  "credits": {
+    "title": "Credits",
+    "fontsLabel": "Typefaces",
+    "sourceLabel": "Source"
   }
 }

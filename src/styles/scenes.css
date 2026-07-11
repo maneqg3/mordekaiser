@@ -1,0 +1,80 @@
+/* Camada estática das seções. Vale SEMPRE — com ou sem suporte a scroll-driven
+   animations, com ou sem reduced-motion. É o fallback e a base. */
+
+/* Cada seção pinta o próprio fundo com os tokens do seu ato (spec Fase 2 §5).
+   O body continua com os tokens do Ato I como base (typography.css). */
+.act-section {
+  background: var(--bg);
+  color: var(--fg);
+  padding-block: clamp(6rem, 4rem + 10vw, 12rem);
+  padding-inline: 1.5rem;
+}
+
+/* Kicker: texto em --fg (o accent do Ato I não passa AA); a barra é o accent. */
+.act-kicker {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.act-kicker::before {
+  content: '';
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  margin-right: 0.75rem;
+  vertical-align: middle;
+  background: var(--accent);
+}
+
+.ability-card {
+  border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+  background: color-mix(in oklab, var(--bg) 92%, var(--fg) 8%);
+}
+
+/* Hero: splash oficial tratada. O gradiente termina no --bg do Ato I para a
+   seção seguinte emendar sem costura. */
+.hero-splash {
+  background-image:
+    linear-gradient(rgb(15 14 12 / 0.55), rgb(15 14 12 / 0.75) 70%, #0f0e0c),
+    url('/champion/splash-0.jpg');
+  background-size: cover;
+  background-position: center 20%;
+}
+
+/* Ato II: névoa em CSS — gradientes + grain de feTurbulence (data URI). */
+.fog-veil {
+  position: relative;
+  overflow: hidden;
+}
+.fog-veil::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 40% at 20% 20%, rgb(168 180 175 / 0.1), transparent 70%),
+    radial-gradient(50% 35% at 80% 60%, rgb(168 180 175 / 0.08), transparent 70%);
+}
+.fog-veil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Ato IV: o portal como tratamento CSS (o shader é Fase 5). */
+.portal-ring {
+  width: min(60vw, 24rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  margin-inline: auto;
+  background: radial-gradient(circle, rgb(126 255 182 / 0.12) 0%, transparent 55%);
+  border: 1px solid rgb(126 255 182 / 0.45);
+  box-shadow:
+    0 0 40px rgb(126 255 182 / 0.25),
+    inset 0 0 80px rgb(126 255 182 / 0.15);
+}

@@ -1,0 +1,18 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "PORT=3105 pnpm start",
+      "startServerReadyPattern": "Ready",
+      "url": ["http://localhost:3105/en", "http://localhost:3105/pt-br"],
+      "numberOfRuns": 3,
+      "settings": { "chromeFlags": "--headless=new --no-sandbox" }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.95 }],
+        "categories:accessibility": ["error", { "minScore": 1 }]
+      }
+    },
+    "upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
+  }
+}
