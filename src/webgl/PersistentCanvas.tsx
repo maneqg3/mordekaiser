@@ -1,0 +1,70 @@
+'use client';
+
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Component, useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import { gateStore } from '@/lib/gate-progress';
+
+/** Cena que quebrar (asset 404, shader inválido) vira nada — o site fica. */
+class SceneErrorBoundary extends Component<
+  { children?: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+/** Primeiro quadro renderizado = aquecimento; o gate conta como 'compile'. */
+function CompileSignal() {
+  const done = useRef(false);
+  useFrame(() => {
+    if (!done.current) {
+      done.current = true;
+      gateStore.set('compile', 1);
+    }
+  });
+  return null;
+}
+
+export default function PersistentCanvas() {
+  const heroTrack = useRef<HTMLElement>(null!);
+  const fogTrack = useRef<HTMLElement>(null!);
+  const [tracked, setTracked] = useState(false);
+
+  useEffect(() => {
+    gateStore.set('chunk', 1);
+    const hero = document.querySelector<HTMLElement>(
+      "section[aria-labelledby='hero-heading']",
+    );
+    const fog = document.querySelector<HTMLElement>(
+      "section[aria-labelledby='grey-waste-heading']",
+    );
+    if (!hero || !fog) return;
+    heroTrack.current = hero;
+    fogTrack.current = fog;
+    // Sync único com DOM externo: as seções são renderizadas pela Fase 2, então
+    // é preciso medi-las no mount e então revelar as Views. Sem loop (deps []).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTracked(true);
+  }, []);
+
+  if (!tracked) return null;
+
+  return (
+    <Canvas
+      aria-hidden
+      frameloop="demand"
+      dpr={[1, 2]}
+      gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}
+    >
+      <CompileSignal />
+      <SceneErrorBoundary>{/* Views entram nas Tasks 5 e 6 */}</SceneErrorBoundary>
+    </Canvas>
+  );
+}

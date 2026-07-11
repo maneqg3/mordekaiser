@@ -78,3 +78,12 @@
     0 0 40px rgb(126 255 182 / 0.25),
     inset 0 0 80px rgb(126 255 182 / 0.15);
 }
+
+/* Fase 3: o canvas fixo (z-index 1, aria-hidden) fica ENTRE o fundo das
+   seções e o conteúdo delas. Sem canvas montado nada muda visualmente —
+   z-index só cria stacking local nos filhos. */
+.act-section > *,
+.hero-splash > * {
+  position: relative;
+  z-index: 2;
+}
