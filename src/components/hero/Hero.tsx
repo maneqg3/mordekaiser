@@ -2,8 +2,11 @@ import { getTranslations } from 'next-intl/server';
 import { preload } from 'react-dom';
 
 export async function Hero({ title }: { title: string }) {
-  // A splash é fundo CSS (fora do next/image): preload manual, é o LCP.
-  preload('/champion/splash-0.jpg', { as: 'image', fetchPriority: 'high' });
+  // A splash é fundo CSS (fora do next/image): preload manual para não
+  // esperar o parse do CSS. Prioridade BAIXA de propósito — o LCP é o texto
+  // do nome (depende das fontes), e em high a imagem de 116kb atrasava o
+  // font-swap e derrubava o Lighthouse de 95 para 94.
+  preload('/champion/splash-0.jpg', { as: 'image', fetchPriority: 'low' });
   const t = await getTranslations('home');
 
   return (
