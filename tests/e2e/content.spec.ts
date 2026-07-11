@@ -1,5 +1,14 @@
+import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import en from '../../src/data/mordekaiser.en.json';
+
+// Lido em runtime, não por import estático: src/data/ é gerado no build
+// (gitignored) e não existe no job de typecheck do CI.
+const en = JSON.parse(
+  readFileSync('src/data/mordekaiser.en.json', 'utf8'),
+) as {
+  passive: { name: string };
+  spells: Array<{ name: string }>;
+};
 
 // Cresce a cada task: 3 atos (Task 4), depois arsenal/realm/incarnations/credits.
 const SECTION_HEADINGS: string[] = [

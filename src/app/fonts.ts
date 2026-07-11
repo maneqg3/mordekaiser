@@ -14,20 +14,20 @@ export const blackletter = localFont({
   display: 'swap',
 });
 
+// Inter 400 e JetBrains 700 saíram do carregamento: nenhum uso na Fase 2, e
+// cada preload de fonte compete banda com a Big Shoulders que define o LCP
+// (o h1 do hero é o LCP; Lighthouse caía para 0.94 no runner do CI).
+// Recolocar o peso quando algum elemento realmente o usar.
 export const body = localFont({
-  src: [
-    { path: '../fonts/inter-300.woff2', weight: '300' },
-    { path: '../fonts/inter-400.woff2', weight: '400' },
-  ],
+  src: '../fonts/inter-300.woff2',
+  weight: '300',
   variable: '--font-body',
   display: 'swap',
 });
 
 export const mono = localFont({
-  src: [
-    { path: '../fonts/jetbrains-mono-400.woff2', weight: '400' },
-    { path: '../fonts/jetbrains-mono-700.woff2', weight: '700' },
-  ],
+  src: '../fonts/jetbrains-mono-400.woff2',
+  weight: '400',
   variable: '--font-mono',
   display: 'swap',
 });
