@@ -1,9 +1,11 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Component, useEffect, useRef, useState } from 'react';
+import { View } from '@react-three/drei';
+import { Component, Suspense, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { gateStore } from '@/lib/gate-progress';
+import { HeroDepth } from '@/webgl/scenes/HeroDepth';
 
 /** Cena que quebrar (asset 404, shader inválido) vira nada — o site fica. */
 class SceneErrorBoundary extends Component<
@@ -64,7 +66,13 @@ export default function PersistentCanvas() {
       style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}
     >
       <CompileSignal />
-      <SceneErrorBoundary>{/* Views entram nas Tasks 5 e 6 */}</SceneErrorBoundary>
+      <SceneErrorBoundary>
+        <Suspense fallback={null}>
+          <View track={heroTrack}>
+            <HeroDepth track={heroTrack} />
+          </View>
+        </Suspense>
+      </SceneErrorBoundary>
     </Canvas>
   );
 }
