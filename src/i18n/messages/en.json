@@ -3,6 +3,12 @@
     "title": "Mordekaiser — the Iron Revenant",
     "description": "A cinematic tribute to Mordekaiser, the Iron Revenant of League of Legends."
   },
+  "gate": {
+    "label": "Mordekaiser — awakening",
+    "loading": "Forging the Iron Revenant",
+    "enter": "Awaken",
+    "progress": "{percent}% forged"
+  },
   "home": {
     "tagline": "Death is not the end of ambition.",
     "patchLabel": "Data Dragon patch {version}",
