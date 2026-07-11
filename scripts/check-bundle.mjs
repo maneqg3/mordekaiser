@@ -1,8 +1,11 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 
-const TARGET_KB = 130;
-const FAIL_KB = 145;
+// Fase 3 (spec §9): orçamento +35% aprovado — three+R3F+drei não cabem no
+// teto antigo (145). O chunk WebGL é lazy e tem teto próprio.
+const TARGET_KB = 175;
+const FAIL_KB = 196;
+const LAZY_FAIL_KB = 243;
 const PAGE_HTML = '.next/server/app/en.html';
 
 // O Turbopack não emite `app-build-manifest.json`, e o `build-manifest.json` só
@@ -50,4 +53,26 @@ if (totalKb > FAIL_KB) {
 }
 if (totalKb > TARGET_KB) {
   console.warn('check-bundle: acima do alvo, abaixo do teto — atenção');
+}
+
+// Chunks lazy: todo .js emitido que o HTML inicial NÃO referencia (o polyfill
+// noModule é referenciado, então fica de fora). Superconjunto do chunk WebGL
+// (inclui Lenis) — conservador de propósito.
+const emitted = readdirSync('.next/static/chunks', { recursive: true })
+  .map(String)
+  .filter((file) => file.endsWith('.js'))
+  .map((file) => `static/chunks/${file.replaceAll('\\', '/')}`);
+const lazy = emitted.filter((asset) => !html.includes(asset));
+
+let lazyBytes = 0;
+for (const asset of lazy) {
+  lazyBytes += gzipSync(readFileSync(`.next/${asset}`)).length;
+}
+const lazyKb = lazyBytes / 1024;
+console.log(
+  `check-bundle: JS lazy (gz) = ${lazyKb.toFixed(1)}kb em ${lazy.length} chunks (teto ${LAZY_FAIL_KB}kb)`,
+);
+if (lazyKb > LAZY_FAIL_KB) {
+  console.error('check-bundle: REPROVADO — chunks lazy acima do teto');
+  process.exit(1);
 }
