@@ -3,6 +3,7 @@ import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { blackletter, body, display, mono } from '@/app/fonts';
 import { EntryGate } from '@/components/gate/EntryGate';
+import { SmoothScroll } from '@/components/SmoothScroll';
 import { WebGLMount } from '@/webgl/WebGLMount';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
@@ -57,6 +58,7 @@ export default async function LocaleLayout({
         />
         {children}
         <WebGLMount />
+        <SmoothScroll />
       </body>
     </html>
   );
