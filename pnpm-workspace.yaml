@@ -8,3 +8,8 @@ allowBuilds:
   '@swc/core': false
   # transitiva do tsx: o script de install linka o binário nativo da plataforma
   esbuild: true
+  # transitivas do @huggingface/transformers (dev-only, geração offline do
+  # depth map). Não precisam compilar: a inferência roda via wasm e nada disso
+  # entra no bundle nem no build da Vercel.
+  onnxruntime-node: false
+  protobufjs: false
