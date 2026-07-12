@@ -64,7 +64,7 @@ export default function PersistentCanvas() {
       // R3F espalha `aria-hidden` no div container; a spec §10 pede o atributo
       // no próprio <canvas>. Marcamos o domElement na criação do renderer.
       onCreated={({ gl }) => gl.domElement.setAttribute('aria-hidden', 'true')}
-      frameloop="demand"
+      frameloop="always"
       dpr={[1, 2]}
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}

@@ -13,6 +13,7 @@ import {
   advectionFragment,
   clearFragment,
   displayFragment,
+  displayVertex,
   divergenceFragment,
   fluidVertex,
   gradientSubtractFragment,
@@ -162,6 +163,7 @@ export function FluidFog({ track }: { track: React.RefObject<HTMLElement> }) {
     const quadScene = new THREE.Scene();
     const quadCamera = new THREE.Camera();
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2));
+    quad.frustumCulled = false; // FBO fullscreen: sem isso o bare Camera o descarta
     quadScene.add(quad);
 
     return {
@@ -317,7 +319,7 @@ export function FluidFog({ track }: { track: React.RefObject<HTMLElement> }) {
       <planeGeometry args={[1, 1]} />
       <shaderMaterial
         ref={displayMaterial}
-        vertexShader={fluidVertex}
+        vertexShader={displayVertex}
         fragmentShader={displayFragment}
         uniforms={displayUniforms}
         transparent

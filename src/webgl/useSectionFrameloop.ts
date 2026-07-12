@@ -1,17 +1,19 @@
 'use client';
 
-import { useThree } from '@react-three/fiber';
 import { useEffect, useState } from 'react';
 
-// Refcount entre cenas: o canvas é um só — volta a 'demand' apenas quando
-// NENHUMA cena está visível.
-let activeScenes = 0;
-
-/** true enquanto a seção rastreada está no viewport; liga frameloop 'always'. */
+/**
+ * true enquanto a seção rastreada está no viewport. As cenas usam isso para
+ * montar/desmontar a mesh e liberar (early-return no useFrame) o trabalho
+ * pesado quando a seção não está visível.
+ *
+ * O canvas roda em `frameloop="always"` (a troca em runtime via `set('always')`
+ * não religa o rAF ocioso do R3F — só a prop do Canvas funciona de forma
+ * confiável), então este hook só reporta visibilidade; não mexe no frameloop.
+ */
 export function useSectionFrameloop(
   track: React.RefObject<HTMLElement>,
 ): boolean {
-  const set = useThree((state) => state.set);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -23,16 +25,6 @@ export function useSectionFrameloop(
     observer.observe(element);
     return () => observer.disconnect();
   }, [track]);
-
-  useEffect(() => {
-    if (!visible) return;
-    activeScenes += 1;
-    set({ frameloop: 'always' });
-    return () => {
-      activeScenes -= 1;
-      if (activeScenes === 0) set({ frameloop: 'demand' });
-    };
-  }, [visible, set]);
 
   return visible;
 }
