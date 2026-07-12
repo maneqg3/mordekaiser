@@ -5,8 +5,10 @@ out/
 .vercel
 .superpowers/
 
-# gerado no build pelo script do Data Dragon
-public/champion/
+# gerado no build pelo script do Data Dragon. depth-0.webp é a exceção:
+# gerado offline por scripts/generate-depth.ts e versionado (spec Fase 3 §2).
+public/champion/*
+!public/champion/depth-0.webp
 src/data/
 
 # saída de testes

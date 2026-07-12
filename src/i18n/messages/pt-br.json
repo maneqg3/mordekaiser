@@ -3,6 +3,12 @@
     "title": "Mordekaiser — o Revenã de Ferro",
     "description": "Um tributo cinematográfico a Mordekaiser, o Revenã de Ferro de League of Legends."
   },
+  "gate": {
+    "label": "Mordekaiser — despertar",
+    "loading": "Forjando o Revenã de Ferro",
+    "enter": "Despertar",
+    "progress": "{percent}% forjado"
+  },
   "home": {
     "tagline": "A morte não é o fim da ambição.",
     "patchLabel": "Patch {version} do Data Dragon",

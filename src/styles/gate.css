@@ -1,0 +1,64 @@
+/* Gate de entrada (Fase 3 §6): inline no HTML servido, invisível por padrão.
+   O boot script no topo do body liga [data-gate] no <html> antes do first
+   paint quando JS está ativo e as saídas de emergência não se aplicam.
+   Sem JS o atributo nunca entra — conteúdo estático direto, ninguém preso. */
+.entry-gate {
+  display: none;
+}
+[data-gate] .entry-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #0f0e0c;
+  color: #d6cfc0;
+  text-align: center;
+}
+[data-gate] body {
+  overflow: hidden;
+}
+
+/* O texto do gate é o LCP quando presente (spec §9): mesmo tratamento
+   tipográfico do hero, pinta com a fonte fallback e troca no swap. */
+.gate-name {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  transition:
+    color 300ms ease-out,
+    text-shadow 300ms ease-out;
+}
+.gate-name[data-lit] {
+  color: #e8f2ec;
+  text-shadow: 0 0 24px rgb(126 255 182 / 0.45);
+}
+
+.gate-plates {
+  width: clamp(5rem, 12vw, 8rem);
+}
+
+.gate-status {
+  font-size: 0.8125rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.gate-enter {
+  border: 1px solid #7effb6;
+  padding: 0.75rem 2.5rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.gate-enter:hover,
+.gate-enter:focus-visible {
+  background: rgb(126 255 182 / 0.12);
+  outline: 1px solid #7effb6;
+  outline-offset: 3px;
+}
