@@ -3,9 +3,12 @@ import { gzipSync } from 'node:zlib';
 
 // Fase 3 (spec §9): orçamento +35% aprovado — three+R3F+drei não cabem no
 // teto antigo (145). O chunk WebGL é lazy e tem teto próprio.
+// Fase 4 (spec §7): gsap+ScrollTrigger (~40kb gz) e a cena da forja entram no
+// chunk lazy — teto 367kb aprovado pelo usuário, alvo interno 300kb.
 const TARGET_KB = 175;
 const FAIL_KB = 196;
-const LAZY_FAIL_KB = 243;
+const LAZY_TARGET_KB = 300;
+const LAZY_FAIL_KB = 367;
 const PAGE_HTML = '.next/server/app/en.html';
 
 // O Turbopack não emite `app-build-manifest.json`, e o `build-manifest.json` só
@@ -75,4 +78,7 @@ console.log(
 if (lazyKb > LAZY_FAIL_KB) {
   console.error('check-bundle: REPROVADO — chunks lazy acima do teto');
   process.exit(1);
+}
+if (lazyKb > LAZY_TARGET_KB) {
+  console.warn('check-bundle: lazy acima do alvo, abaixo do teto — atenção');
 }
