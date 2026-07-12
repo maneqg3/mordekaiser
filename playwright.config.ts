@@ -7,7 +7,13 @@ const baseURL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  use: { baseURL },
+  use: {
+    baseURL,
+    // Chrome 120+ bloqueia o fallback SwiftShader de WebGL em headless sem esta
+    // flag; sem ela as cenas R3F não montam no CI (spec §11: cenas montam via
+    // SwiftShader, fps não é representativo — perf se mede manual).
+    launchOptions: { args: ['--enable-unsafe-swiftshader'] },
+  },
   webServer: {
     command: 'pnpm start',
     env: { PORT: String(PORT) },

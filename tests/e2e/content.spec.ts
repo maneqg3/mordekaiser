@@ -1,6 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 
+// O gate tem spec próprio (gate.spec.ts); aqui testamos o site em si.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() =>
+    sessionStorage.setItem('mordekaiser-gate-seen', '1'),
+  );
+});
+
 // Lido em runtime, não por import estático: src/data/ é gerado no build
 // (gitignored) e não existe no job de typecheck do CI.
 const en = JSON.parse(

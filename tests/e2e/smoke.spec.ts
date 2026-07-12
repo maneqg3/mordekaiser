@@ -1,6 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+// O gate tem spec próprio (gate.spec.ts); aqui testamos o site em si.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() =>
+    sessionStorage.setItem('mordekaiser-gate-seen', '1'),
+  );
+});
+
 test('raiz redireciona para /en', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveURL(/\/en$/);
