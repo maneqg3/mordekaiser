@@ -87,3 +87,9 @@
   position: relative;
   z-index: 2;
 }
+
+/* Glifos de Ochnun: invisíveis até o scrub da forja escrevê-los (fase 4).
+   Sem JS/WebGL este bloco nunca é sobrescrito e a Fase 2 fica intacta. */
+.ochnun-glyphs {
+  opacity: 0;
+}

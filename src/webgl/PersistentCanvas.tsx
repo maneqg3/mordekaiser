@@ -14,6 +14,8 @@ import type { ReactNode } from 'react';
 import { sceneVisibility } from '@/webgl/useSectionFrameloop';
 import { HeroDepth } from '@/webgl/scenes/HeroDepth';
 import { FluidFog } from '@/webgl/scenes/FluidFog';
+import { Forge } from '@/webgl/scenes/Forge';
+import { setupForgeScrub } from '@/webgl/forge-scrub';
 
 /** Cena que quebrar (asset 404, shader inválido) vira nada — o site fica. */
 class SceneErrorBoundary extends Component<
@@ -32,6 +34,7 @@ class SceneErrorBoundary extends Component<
 export default function PersistentCanvas() {
   const heroTrack = useRef<HTMLElement>(null!);
   const fogTrack = useRef<HTMLElement>(null!);
+  const forgeTrack = useRef<HTMLElement>(null!);
   const [tracked, setTracked] = useState(false);
   // 'always' só enquanto alguma cena está no viewport; 'demand' (canvas ocioso)
   // caso contrário — preserva o orçamento de perf fora das seções WebGL.
@@ -48,14 +51,25 @@ export default function PersistentCanvas() {
     const fog = document.querySelector<HTMLElement>(
       "section[aria-labelledby='grey-waste-heading']",
     );
-    if (!hero || !fog) return;
+    const forge = document.querySelector<HTMLElement>(
+      "section[aria-labelledby='forge-heading']",
+    );
+    if (!hero || !fog || !forge) return;
     heroTrack.current = hero;
     fogTrack.current = fog;
+    forgeTrack.current = forge;
     // Sync único com DOM externo: as seções são renderizadas pela Fase 2, então
     // é preciso medi-las no mount e então revelar as Views. Sem loop (deps []).
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setTracked(true);
   }, []);
+
+  // O pin nasce e morre com o canvas: setupForgeScrub retorna o cleanup — o
+  // React o executa no unmount.
+  useEffect(() => {
+    if (!tracked) return;
+    return setupForgeScrub(forgeTrack.current);
+  }, [tracked]);
 
   if (!tracked) return null;
 
@@ -77,6 +91,9 @@ export default function PersistentCanvas() {
           </View>
           <View track={fogTrack}>
             <FluidFog track={fogTrack} />
+          </View>
+          <View track={forgeTrack}>
+            <Forge track={forgeTrack} />
           </View>
         </Suspense>
       </SceneErrorBoundary>
