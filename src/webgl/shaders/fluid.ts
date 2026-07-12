@@ -11,6 +11,17 @@ export const fluidVertex = /* glsl */ `
   }
 `;
 
+// O display roda DENTRO da View (mesh com scale = viewport), não é um passe
+// offscreen fullscreen. Precisa da projeção/modelview — senão o fluidVertex
+// (clip-space direto) desenha um quad de meia-tela central que ignora o scale.
+export const displayVertex = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
 export const splatFragment = /* glsl */ `
   varying vec2 vUv;
   uniform sampler2D uTarget;

@@ -16,19 +16,19 @@ test('sem etapas reportadas, progresso é 0', () => {
 });
 
 test('todas as etapas completas dão 1', () => {
-  expect(
-    aggregateProgress({ fonts: 1, splash: 1, depth: 1, chunk: 1, compile: 1 }),
-  ).toBeCloseTo(1);
+  expect(aggregateProgress({ fonts: 1, splash: 1, depth: 1 })).toBeCloseTo(1);
 });
 
 test('etapa parcial pesa proporcionalmente', () => {
-  expect(aggregateProgress({ chunk: 1 })).toBeCloseTo(GATE_STAGES.chunk);
-  expect(aggregateProgress({ chunk: 0.5 })).toBeCloseTo(GATE_STAGES.chunk / 2);
+  expect(aggregateProgress({ splash: 1 })).toBeCloseTo(GATE_STAGES.splash);
+  expect(aggregateProgress({ splash: 0.5 })).toBeCloseTo(
+    GATE_STAGES.splash / 2,
+  );
 });
 
 test('frações fora de 0..1 são clampadas', () => {
-  expect(aggregateProgress({ chunk: 5 })).toBeCloseTo(GATE_STAGES.chunk);
-  expect(aggregateProgress({ chunk: -1 })).toBe(0);
+  expect(aggregateProgress({ splash: 5 })).toBeCloseTo(GATE_STAGES.splash);
+  expect(aggregateProgress({ splash: -1 })).toBe(0);
 });
 
 test('platesLit mapeia fração para as 14 placas', () => {
@@ -48,7 +48,7 @@ test('store agrega, notifica e para de notificar após unsubscribe', () => {
   expect(store.value()).toBeCloseTo(GATE_STAGES.fonts);
 
   unsubscribe();
-  store.set('chunk', 1);
+  store.set('splash', 1);
   expect(listener).toHaveBeenCalledTimes(1);
-  expect(store.value()).toBeCloseTo(GATE_STAGES.fonts + GATE_STAGES.chunk);
+  expect(store.value()).toBeCloseTo(GATE_STAGES.fonts + GATE_STAGES.splash);
 });

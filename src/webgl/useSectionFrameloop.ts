@@ -1,17 +1,35 @@
 'use client';
 
-import { useThree } from '@react-three/fiber';
 import { useEffect, useState } from 'react';
 
-// Refcount entre cenas: o canvas é um só — volta a 'demand' apenas quando
-// NENHUMA cena está visível.
-let activeScenes = 0;
+// Store externo minimalista: quantas cenas estão visíveis agora. O
+// PersistentCanvas lê isso (useSyncExternalStore) e dirige a prop `frameloop`
+// do Canvas — 'always' com alguma cena visível, 'demand' quando ociosa.
+// A prop do Canvas é a única forma confiável de trocar o frameloop em runtime;
+// `set({frameloop})` do store do R3F não religa o rAF ocioso.
+let activeCount = 0;
+const listeners = new Set<() => void>();
+function emit(): void {
+  for (const listener of listeners) listener();
+}
 
-/** true enquanto a seção rastreada está no viewport; liga frameloop 'always'. */
+export const sceneVisibility = {
+  subscribe(listener: () => void): () => void {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  },
+  getSnapshot: (): number => activeCount,
+};
+
+/**
+ * true enquanto a seção rastreada está no viewport. As cenas usam isso para
+ * montar/desmontar a mesh e liberar (early-return no useFrame) o trabalho
+ * pesado quando fora do viewport. Também alimenta o contador que decide o
+ * frameloop do canvas.
+ */
 export function useSectionFrameloop(
   track: React.RefObject<HTMLElement>,
 ): boolean {
-  const set = useThree((state) => state.set);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -26,13 +44,13 @@ export function useSectionFrameloop(
 
   useEffect(() => {
     if (!visible) return;
-    activeScenes += 1;
-    set({ frameloop: 'always' });
+    activeCount += 1;
+    emit();
     return () => {
-      activeScenes -= 1;
-      if (activeScenes === 0) set({ frameloop: 'demand' });
+      activeCount -= 1;
+      emit();
     };
-  }, [visible, set]);
+  }, [visible]);
 
   return visible;
 }
