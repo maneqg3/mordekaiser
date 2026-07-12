@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { LoreSection } from '@/components/ui/LoreSection';
 import { ForgePlates } from './ForgePlates';
+import { OchnunGlyphs } from './OchnunGlyphs';
 
 export async function ActForge() {
   const t = await getTranslations('forge');
@@ -13,7 +14,9 @@ export async function ActForge() {
       body={t.raw('body') as string[]}
     >
       <ForgePlates />
+      <OchnunGlyphs />
       <p
+        data-spirit-name
         className="type-display text-center text-5xl sm:text-6xl"
         style={{ color: 'var(--accent)' }}
       >
