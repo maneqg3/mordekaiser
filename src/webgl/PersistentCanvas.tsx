@@ -2,9 +2,17 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { View } from '@react-three/drei';
-import { Component, Suspense, useEffect, useRef, useState } from 'react';
+import {
+  Component,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import type { ReactNode } from 'react';
 import { gateStore } from '@/lib/gate-progress';
+import { sceneVisibility } from '@/webgl/useSectionFrameloop';
 import { HeroDepth } from '@/webgl/scenes/HeroDepth';
 import { FluidFog } from '@/webgl/scenes/FluidFog';
 
@@ -38,6 +46,13 @@ export default function PersistentCanvas() {
   const heroTrack = useRef<HTMLElement>(null!);
   const fogTrack = useRef<HTMLElement>(null!);
   const [tracked, setTracked] = useState(false);
+  // 'always' só enquanto alguma cena está no viewport; 'demand' (canvas ocioso)
+  // caso contrário — preserva o orçamento de perf fora das seções WebGL.
+  const activeScenes = useSyncExternalStore(
+    sceneVisibility.subscribe,
+    sceneVisibility.getSnapshot,
+    () => 0,
+  );
 
   useEffect(() => {
     gateStore.set('chunk', 1);
@@ -64,7 +79,7 @@ export default function PersistentCanvas() {
       // R3F espalha `aria-hidden` no div container; a spec §10 pede o atributo
       // no próprio <canvas>. Marcamos o domElement na criação do renderer.
       onCreated={({ gl }) => gl.domElement.setAttribute('aria-hidden', 'true')}
-      frameloop="always"
+      frameloop={activeScenes > 0 ? 'always' : 'demand'}
       dpr={[1, 2]}
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}
