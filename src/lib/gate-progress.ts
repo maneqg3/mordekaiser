@@ -1,10 +1,12 @@
-/** Pesos por etapa do gate (spec Fase 3 §6). Somam 1. */
+/** Pesos por etapa do gate (spec Fase 3 §6). Somam 1.
+ *
+ * Só assets de HTML/CSS (fontes + splash + depth do hero). O chunk WebGL NÃO
+ * entra: ele só carrega DEPOIS do gate ser dispensado (perf — o WebGL rodando
+ * durante o gate, que é a janela medida pelo Lighthouse, derrubava a nota). */
 export const GATE_STAGES = {
-  fonts: 0.15,
-  splash: 0.2,
-  depth: 0.15,
-  chunk: 0.3,
-  compile: 0.2,
+  fonts: 0.3,
+  splash: 0.4,
+  depth: 0.3,
 } as const;
 
 export type GateStage = keyof typeof GATE_STAGES;

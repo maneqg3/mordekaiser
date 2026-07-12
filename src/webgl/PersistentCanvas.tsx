@@ -1,6 +1,6 @@
 'use client';
 
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { View } from '@react-three/drei';
 import {
   Component,
@@ -11,7 +11,6 @@ import {
   useSyncExternalStore,
 } from 'react';
 import type { ReactNode } from 'react';
-import { gateStore } from '@/lib/gate-progress';
 import { sceneVisibility } from '@/webgl/useSectionFrameloop';
 import { HeroDepth } from '@/webgl/scenes/HeroDepth';
 import { FluidFog } from '@/webgl/scenes/FluidFog';
@@ -30,18 +29,6 @@ class SceneErrorBoundary extends Component<
   }
 }
 
-/** Primeiro quadro renderizado = aquecimento; o gate conta como 'compile'. */
-function CompileSignal() {
-  const done = useRef(false);
-  useFrame(() => {
-    if (!done.current) {
-      done.current = true;
-      gateStore.set('compile', 1);
-    }
-  });
-  return null;
-}
-
 export default function PersistentCanvas() {
   const heroTrack = useRef<HTMLElement>(null!);
   const fogTrack = useRef<HTMLElement>(null!);
@@ -55,7 +42,6 @@ export default function PersistentCanvas() {
   );
 
   useEffect(() => {
-    gateStore.set('chunk', 1);
     const hero = document.querySelector<HTMLElement>(
       "section[aria-labelledby='hero-heading']",
     );
@@ -84,7 +70,6 @@ export default function PersistentCanvas() {
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}
     >
-      <CompileSignal />
       <SceneErrorBoundary>
         <Suspense fallback={null}>
           <View track={heroTrack}>
