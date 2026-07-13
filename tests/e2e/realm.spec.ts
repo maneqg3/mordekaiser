@@ -10,9 +10,19 @@ const R_NAME = en.spells[3].name;
 const CROSS = { en: 'Cross over', 'pt-br': 'Atravessar' } as const;
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() =>
-    sessionStorage.setItem('mordekaiser-gate-seen', '1'),
-  );
+  await page.addInitScript(() => {
+    sessionStorage.setItem('mordekaiser-gate-seen', '1');
+    // Conta as chamadas de startViewTransition para asserir o caminho tomado.
+    const original = Document.prototype.startViewTransition;
+    if (!original) return;
+    Document.prototype.startViewTransition = function (
+      ...args: Parameters<typeof original>
+    ) {
+      const w = window as unknown as { __vtCalls?: number };
+      w.__vtCalls = (w.__vtCalls ?? 0) + 1;
+      return original.apply(this, args);
+    };
+  });
 });
 
 /** Espera a hidratação: o RealmGateway marca o <html> no mount. */
@@ -78,3 +88,37 @@ for (const locale of ['en', 'pt-br'] as const) {
     expect(results.violations).toEqual([]);
   });
 }
+
+test('reduced-motion: troca instantânea, sem view transition', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/en');
+  await waitPortalReady(page);
+  await page.getByRole('button', { name: CROSS.en }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-realm', 'death');
+  const calls = await page.evaluate(
+    () => (window as unknown as { __vtCalls?: number }).__vtCalls ?? 0,
+  );
+  expect(calls).toBe(0);
+});
+
+test('sem reduced-motion, a travessia passa por startViewTransition', async ({
+  page,
+}) => {
+  await page.goto('/en');
+  await waitPortalReady(page);
+  const supported = await page.evaluate(
+    () => 'startViewTransition' in document,
+  );
+  test.skip(!supported, 'browser sem view transitions usa o crossfade CSS');
+  await page.getByRole('button', { name: CROSS.en }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-realm', 'death');
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as unknown as { __vtCalls?: number }).__vtCalls ?? 0,
+      ),
+    )
+    .toBeGreaterThan(0);
+});
