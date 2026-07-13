@@ -1,16 +1,31 @@
-// As placas convergindo em silhueta de torre — o motivo do sigilo
-// (spec mãe §3). Abstratas e estilizadas, não réplica do jogo.
+import { MACE_HEIGHT, plateShapes } from '@/webgl/forge-layout';
+
+// As placas convergindo na silhueta da Véu da Noite — derivadas da MESMA
+// tabela de perfil da cena 3D (spec 4.5 §4). Abstratas e estilizadas, não
+// réplica do jogo. O gate permanece torre (símbolo distinto de propósito).
+const CENTER_X = 100;
+const BASELINE_Y = 270;
+const SPAN = 260; // altura útil do viewBox 200×280
+
+function toView(worldUnits: number): number {
+  return (worldUnits / MACE_HEIGHT) * SPAN;
+}
+
 export function ForgePlates() {
   return (
     <svg aria-hidden viewBox="0 0 200 280" className="mx-auto w-40 sm:w-52">
       <g fill="#111314" stroke="#7effb6" strokeOpacity="0.35" strokeWidth="1">
-        <polygon points="70,270 130,270 126,240 74,240" />
-        <polygon points="74,234 126,234 122,200 78,200" />
-        <polygon points="78,194 122,194 118,160 82,160" />
-        <polygon points="82,154 118,154 114,118 86,118" />
-        <polygon points="86,112 114,112 110,80 90,80" />
-        <polygon points="90,74 110,74 106,46 94,46" />
-        <polygon points="94,40 106,40 100,10" />
+        {plateShapes().map((plate) => {
+          const yBottom = (BASELINE_Y - toView(plate.yBottom)).toFixed(1);
+          const yTop = (BASELINE_Y - toView(plate.yTop)).toFixed(1);
+          const points = [
+            `${(CENTER_X - toView(plate.halfWidthBottom)).toFixed(1)},${yBottom}`,
+            `${(CENTER_X + toView(plate.halfWidthBottom)).toFixed(1)},${yBottom}`,
+            `${(CENTER_X + toView(plate.halfWidthTop)).toFixed(1)},${yTop}`,
+            `${(CENTER_X - toView(plate.halfWidthTop)).toFixed(1)},${yTop}`,
+          ].join(' ');
+          return <polygon key={plate.yBottom} points={points} />;
+        })}
       </g>
     </svg>
   );
