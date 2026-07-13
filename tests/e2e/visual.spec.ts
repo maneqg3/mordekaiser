@@ -6,6 +6,7 @@ const SECTIONS = [
   'forge-heading',
   'arsenal-heading',
   'incarnations-heading',
+  'realm-heading',
 ];
 
 for (const width of WIDTHS) {
@@ -13,6 +14,9 @@ for (const width of WIDTHS) {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/en');
+    // Hidratação: o card do R some quando [data-portal-ready] entra — esperar
+    // evita screenshot capturado no meio da troca.
+    await expect(page.locator('html')).toHaveAttribute('data-portal-ready', '');
     // Rola a página inteira para disparar as imagens lazy antes das capturas.
     await page.evaluate(async () => {
       for (let y = 0; y < document.body.scrollHeight; y += 600) {
@@ -29,5 +33,20 @@ for (const width of WIDTHS) {
         maxDiffPixelRatio: 0.02,
       });
     }
+  });
+
+  test(`visual /en reino da morte @${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/en');
+    await expect(page.locator('html')).toHaveAttribute('data-portal-ready', '');
+    // Reduced-motion: travessia instantânea — screenshot determinístico.
+    await page.getByRole('button', { name: 'Cross over' }).click();
+    const section = page.locator("[aria-labelledby='realm-heading']");
+    await section.scrollIntoViewIfNeeded();
+    await page.waitForLoadState('networkidle');
+    await expect(section).toHaveScreenshot(`realm-heading-death-${width}.png`, {
+      maxDiffPixelRatio: 0.02,
+    });
   });
 }
