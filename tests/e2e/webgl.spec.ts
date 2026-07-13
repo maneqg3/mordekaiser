@@ -41,3 +41,26 @@ test('transições de cor da fase 2 seguem funcionando com lenis ativo', async (
     .poll(() => page.evaluate(() => window.scrollY))
     .toBeGreaterThan(0);
 });
+
+test('cena do portal renderiza sem erros de shader', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
+  await page.goto('/en');
+  await expect(page.locator('canvas[aria-hidden="true"]')).toHaveCount(1, {
+    timeout: 15_000,
+  });
+  await page
+    .locator("section[aria-labelledby='realm-heading']")
+    .scrollIntoViewIfNeeded();
+  // Dois rAF: garante pelo menos um quadro renderizado com a cena visível —
+  // erro de compilação de shader do three aparece no console aqui.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
+  expect(errors.filter((text) => text.includes('THREE'))).toEqual([]);
+});
