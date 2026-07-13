@@ -20,6 +20,10 @@ test-results/
 # código descartável da Fase 0 — vive na branch spike/fase-0
 spike/
 
+# referência local da Fase 4.5 (STL/DDS do jogo — asset da Riot, nunca no repo;
+# o derivado versionado é src/lib/nightfall-profile.ts)
+nightfall/
+
 # docs internos de processo (specs/planos/spikes) — ficam locais, fora do repo público
 docs/
 
