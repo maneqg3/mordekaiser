@@ -81,6 +81,14 @@
       animation-range: entry 0% entry 100%;
     }
 
+    /* Fase 5: dentro do reino as animações de tokens dos atos cedem — o
+       repaint global de [data-realm='death'] (tokens.css) governa. Animação
+       vence declaração normal na cascata, então sem isto o reino não repinta.
+       Mesma especificidade (0-2-1) das regras acima: a ordem decide. */
+    [data-realm='death'] section[data-act] {
+      animation: none;
+    }
+
     /* Reveal de conteúdo na entrada de cada bloco. */
     .reveal {
       animation: reveal linear both;
@@ -96,6 +104,64 @@
         opacity: 1;
         transform: none;
       }
+    }
+  }
+}
+
+/* Fase 5: a travessia. O reveal circular nasce no centro do portal
+   (--portal-x/--portal-y, gravados pelo RealmGateway no clique). Sem view
+   transitions, o fallback é o crossfade das custom properties registradas
+   (@property, Fase 1). Reduced-motion: nada disto — o helper aplica direto
+   e a troca é instantânea. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (view-transition-name: root) {
+    /* Ida: o reino entra num círculo que cresce a partir do portal. */
+    [data-realm='death']::view-transition-old(root) {
+      animation: none;
+    }
+    [data-realm='death']::view-transition-new(root) {
+      animation: portal-open 800ms ease-out both;
+    }
+    /* Volta: o mundo morto sai num círculo que encolhe para o portal. O
+       snapshot antigo fica por cima (z-index) enquanto encolhe. */
+    :root:not([data-realm='death'])::view-transition-old(root) {
+      animation: portal-close 800ms ease-in both;
+      z-index: 1;
+    }
+    :root:not([data-realm='death'])::view-transition-new(root) {
+      animation: none;
+    }
+    @keyframes portal-open {
+      from {
+        clip-path: circle(0 at var(--portal-x, 50vw) var(--portal-y, 50vh));
+      }
+      to {
+        clip-path: circle(
+          150vmax at var(--portal-x, 50vw) var(--portal-y, 50vh)
+        );
+      }
+    }
+    @keyframes portal-close {
+      from {
+        clip-path: circle(
+          150vmax at var(--portal-x, 50vw) var(--portal-y, 50vh)
+        );
+      }
+      to {
+        clip-path: circle(0 at var(--portal-x, 50vw) var(--portal-y, 50vh));
+      }
+    }
+  }
+
+  /* Firefox e afins: crossfade de cores de graça via @property. As animações
+     de ato (scroll-driven) vencem a transição onde existirem — sem conflito. */
+  @supports not (view-transition-name: root) {
+    :root,
+    section[data-act] {
+      transition:
+        --bg 600ms ease,
+        --fg 600ms ease,
+        --accent 600ms ease;
     }
   }
 }

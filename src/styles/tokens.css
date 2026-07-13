@@ -41,3 +41,13 @@
   --fg: #e8f2ec;
   --accent: #7effb6;
 }
+
+/* Reino da Morte (Fase 5): a travessia repinta a página inteira. O atributo
+   vive no <html>; o par de atributos (0-2-0) vence o [data-act='x'] (0-1-0)
+   das seções, e a posição no fim do arquivo desempata contra o :root. */
+[data-realm='death'],
+[data-realm='death'] [data-act] {
+  --bg: #050807;
+  --fg: #e8f2ec;
+  --accent: #52ff9c;
+}

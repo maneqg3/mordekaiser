@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { RealmGateway } from '@/components/realm-of-death/RealmGateway';
 import { LoreSection } from '@/components/ui/LoreSection';
 import type { ChampionData } from '@/lib/ddragon';
 
@@ -16,7 +17,10 @@ export async function RealmOfDeath({ champion }: { champion: ChampionData }) {
       body={t.raw('body') as string[]}
     >
       <div aria-hidden className="portal-ring" />
-      <article className="ability-card flex flex-col gap-3 p-6">
+      <RealmGateway
+        labels={{ cross: t('crossLabel'), return: t('returnLabel') }}
+      />
+      <article className="ability-card realm-ultimate flex flex-col gap-3 p-6">
         <div className="flex items-center gap-4">
           {/* eslint-disable-next-line @next/next/no-img-element -- next/image estoura o teto de bundle (spec §9) */}
           <img

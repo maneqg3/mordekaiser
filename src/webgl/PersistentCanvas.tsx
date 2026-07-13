@@ -15,6 +15,7 @@ import { sceneVisibility } from '@/webgl/useSectionFrameloop';
 import { HeroDepth } from '@/webgl/scenes/HeroDepth';
 import { FluidFog } from '@/webgl/scenes/FluidFog';
 import { Forge } from '@/webgl/scenes/Forge';
+import { Portal } from '@/webgl/scenes/Portal';
 import { setupForgeScrub } from '@/webgl/forge-scrub';
 
 /** Cena que quebrar (asset 404, shader inválido) vira nada — o site fica. */
@@ -35,6 +36,7 @@ export default function PersistentCanvas() {
   const heroTrack = useRef<HTMLElement>(null!);
   const fogTrack = useRef<HTMLElement>(null!);
   const forgeTrack = useRef<HTMLElement>(null!);
+  const realmTrack = useRef<HTMLElement>(null!);
   const [tracked, setTracked] = useState(false);
   // 'always' só enquanto alguma cena está no viewport; 'demand' (canvas ocioso)
   // caso contrário — preserva o orçamento de perf fora das seções WebGL.
@@ -54,10 +56,14 @@ export default function PersistentCanvas() {
     const forge = document.querySelector<HTMLElement>(
       "section[aria-labelledby='forge-heading']",
     );
-    if (!hero || !fog || !forge) return;
+    const realm = document.querySelector<HTMLElement>(
+      "section[aria-labelledby='realm-heading']",
+    );
+    if (!hero || !fog || !forge || !realm) return;
     heroTrack.current = hero;
     fogTrack.current = fog;
     forgeTrack.current = forge;
+    realmTrack.current = realm;
     // Sync único com DOM externo: as seções são renderizadas pela Fase 2, então
     // é preciso medi-las no mount e então revelar as Views. Sem loop (deps []).
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -94,6 +100,9 @@ export default function PersistentCanvas() {
           </View>
           <View track={forgeTrack}>
             <Forge track={forgeTrack} />
+          </View>
+          <View track={realmTrack}>
+            <Portal track={realmTrack} />
           </View>
         </Suspense>
       </SceneErrorBoundary>
