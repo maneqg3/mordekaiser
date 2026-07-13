@@ -1,0 +1,90 @@
+/* Reino da Morte — todas as regras da travessia num lugar só (Fase 5.1).
+   Importado por ÚLTIMO em globals.css: as regras de mesma especificidade
+   daqui vencem as de motion.css (ex.: animation none sobre os atos). */
+
+/* A travessia (progressive enhancement). [data-portal-ready] entra no <html>
+   na hidratação; sem JS nada disto existe — botão escondido e card do R
+   visível, Fase 2 intacta. */
+html:not([data-portal-ready]) .realm-cta {
+  display: none;
+}
+[data-portal-ready]:not([data-realm='death']) .realm-ultimate {
+  display: none;
+}
+
+/* Botão nativo com foco visível; pintado pelos tokens para atravessar junto. */
+.realm-cta {
+  align-self: center;
+  border: 1px solid var(--accent);
+  padding: 0.75rem 2.5rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.realm-cta:hover,
+.realm-cta:focus-visible {
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Dentro do reino as animações de tokens dos atos cedem — o repaint global
+     de [data-realm='death'] (tokens.css) governa. Animação vence declaração
+     normal na cascata. Este arquivo importa DEPOIS de motion.css: a ordem
+     garante a vitória com a mesma especificidade (0-2-1). */
+  @supports (animation-timeline: view()) {
+    [data-realm='death'] section[data-act] {
+      animation: none;
+    }
+  }
+
+  /* Reveal circular da travessia (substituído pela sucção na Task 3). */
+  @supports (view-transition-name: root) {
+    [data-realm='death']::view-transition-old(root) {
+      animation: none;
+    }
+    [data-realm='death']::view-transition-new(root) {
+      animation: portal-open 800ms ease-out both;
+    }
+    :root:not([data-realm='death'])::view-transition-old(root) {
+      animation: portal-close 800ms ease-in both;
+      z-index: 1;
+    }
+    :root:not([data-realm='death'])::view-transition-new(root) {
+      animation: none;
+    }
+    @keyframes portal-open {
+      from {
+        clip-path: circle(0 at var(--portal-x, 50vw) var(--portal-y, 50vh));
+      }
+      to {
+        clip-path: circle(
+          150vmax at var(--portal-x, 50vw) var(--portal-y, 50vh)
+        );
+      }
+    }
+    @keyframes portal-close {
+      from {
+        clip-path: circle(
+          150vmax at var(--portal-x, 50vw) var(--portal-y, 50vh)
+        );
+      }
+      to {
+        clip-path: circle(0 at var(--portal-x, 50vw) var(--portal-y, 50vh));
+      }
+    }
+  }
+
+  /* Firefox e afins: crossfade de cores via @property (Fase 1). */
+  @supports not (view-transition-name: root) {
+    :root,
+    section[data-act] {
+      transition:
+        --bg 600ms ease,
+        --fg 600ms ease,
+        --accent 600ms ease;
+    }
+  }
+}

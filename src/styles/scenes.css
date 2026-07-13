@@ -93,31 +93,3 @@
 .ochnun-glyphs {
   opacity: 0;
 }
-
-/* Fase 5: a travessia (progressive enhancement). [data-portal-ready] entra no
-   <html> na hidratação; sem JS nada disto existe — botão escondido e card do
-   R visível, Fase 2 intacta (spec §4). */
-html:not([data-portal-ready]) .realm-cta {
-  display: none;
-}
-[data-portal-ready]:not([data-realm='death']) .realm-ultimate {
-  display: none;
-}
-
-/* Botão nativo com foco visível (spec §5); mesma linguagem do .gate-enter,
-   mas pintado pelos tokens para atravessar junto com a página. */
-.realm-cta {
-  align-self: center;
-  border: 1px solid var(--accent);
-  padding: 0.75rem 2.5rem;
-  font-size: 0.875rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-.realm-cta:hover,
-.realm-cta:focus-visible {
-  background: color-mix(in oklab, var(--accent) 12%, transparent);
-  outline: 1px solid var(--accent);
-  outline-offset: 3px;
-}
