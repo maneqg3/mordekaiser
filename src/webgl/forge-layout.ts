@@ -1,11 +1,11 @@
 import { PLATE_COUNT } from '@/lib/gate-progress';
+import { NIGHTFALL_PROFILE } from '@/lib/nightfall-profile';
 
-// Torre em unidades de mundo: a MESMA derivação do PlateProgress do gate
-// (viewBox 200×280, meia-largura 30→6, vão de 15%) escalada por 1/100.
-// Geometria derivada, não desenhada — o motivo do sigilo é um só.
-const TOWER_HEIGHT = 2.6;
-const HALF_WIDTH_BOTTOM = 0.3;
-const HALF_WIDTH_TOP = 0.06;
+// Maça Véu da Noite em unidades de mundo: o contorno vem da tabela de perfil
+// derivada offline do STL de referência (spec 4.5 §4) — geometria derivada,
+// não desenhada. Mesma altura da torre da Fase 4 para não mexer no
+// enquadramento da câmera. O gate permanece torre (símbolo distinto).
+export const MACE_HEIGHT = 2.6;
 const GAP = 0.15;
 const EXPLODE_RADIUS = 2.2;
 const EXPLODE_TILT = 1.1;
@@ -33,17 +33,25 @@ function easeInOutCubic(t: number): number {
   return x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2;
 }
 
+/** Meia-largura em unidades de mundo para t (0→1): interpolação linear na tabela. */
+function halfWidthAt(t: number): number {
+  const scaled = clamp01(t) * (NIGHTFALL_PROFILE.length - 1);
+  const index = Math.min(Math.floor(scaled), NIGHTFALL_PROFILE.length - 2);
+  const fraction = scaled - index;
+  const from = NIGHTFALL_PROFILE[index].halfWidth;
+  const to = NIGHTFALL_PROFILE[index + 1].halfWidth;
+  return (from + (to - from) * fraction) * MACE_HEIGHT;
+}
+
 /** Contorno 2D de cada placa; a extrusão acontece na cena. */
 export function plateShapes(count: number = PLATE_COUNT): PlateShape[] {
-  const half = (t: number) =>
-    HALF_WIDTH_BOTTOM - (HALF_WIDTH_BOTTOM - HALF_WIDTH_TOP) * t;
-  const y = (t: number) => TOWER_HEIGHT * t;
+  const y = (t: number) => MACE_HEIGHT * t;
   return Array.from({ length: count }, (_, index) => {
     const t0 = index / count;
     const t1 = (index + 1 - GAP) / count;
     return {
-      halfWidthBottom: half(t0),
-      halfWidthTop: half(t1),
+      halfWidthBottom: halfWidthAt(t0),
+      halfWidthTop: halfWidthAt(t1),
       yBottom: y(t0),
       yTop: y(t1),
     };
@@ -86,7 +94,7 @@ export function cameraPose(progress: number): {
   const distance = 4.6 - 0.8 * eased;
   return {
     position: [Math.sin(azimuth) * distance, 1.5, Math.cos(azimuth) * distance],
-    target: [0, TOWER_HEIGHT / 2, 0],
+    target: [0, MACE_HEIGHT / 2, 0],
   };
 }
 
