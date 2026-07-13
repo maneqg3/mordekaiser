@@ -1,6 +1,6 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { View } from '@react-three/drei';
 import {
   Component,
@@ -30,6 +30,27 @@ class SceneErrorBoundary extends Component<
   render() {
     return this.state.failed ? null : this.props.children;
   }
+}
+
+/**
+ * Dirige frames com invalidate() num rAF próprio enquanto houver cena visível.
+ * Trocar a prop `frameloop` em runtime ('demand'→'always') não religa o rAF de
+ * forma confiável (bug da Fase 5: anel do portal congelado em um quadro) — com
+ * o driver, o frameloop fica fixo em 'demand' e quem pede quadro somos nós.
+ */
+function FrameDriver({ active }: { active: boolean }) {
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0;
+    const loop = () => {
+      invalidate();
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [active, invalidate]);
+  return null;
 }
 
 export default function PersistentCanvas() {
@@ -85,11 +106,12 @@ export default function PersistentCanvas() {
       // R3F espalha `aria-hidden` no div container; a spec §10 pede o atributo
       // no próprio <canvas>. Marcamos o domElement na criação do renderer.
       onCreated={({ gl }) => gl.domElement.setAttribute('aria-hidden', 'true')}
-      frameloop={activeScenes > 0 ? 'always' : 'demand'}
+      frameloop="demand"
       dpr={[1, 2]}
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}
     >
+      <FrameDriver active={activeScenes > 0} />
       <SceneErrorBoundary>
         <Suspense fallback={null}>
           <View track={heroTrack}>

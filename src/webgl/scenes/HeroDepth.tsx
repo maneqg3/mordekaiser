@@ -34,6 +34,10 @@ export function HeroDepth({ track }: { track: React.RefObject<HTMLElement> }) {
     '/champion/depth-0.webp',
   ]);
   const target = useRef(new THREE.Vector2(0, 0));
+  // O R3F v9 clona cada uniform ao aplicar a prop `uniforms`: reatribuir
+  // `.value` numérico no objeto do useMemo não chega ao material. Os Vector2
+  // sobrevivem por referência compartilhada; uScroll (número) precisa do ref.
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   const uniforms = useMemo(
     () => ({
@@ -64,10 +68,8 @@ export function HeroDepth({ track }: { track: React.RefObject<HTMLElement> }) {
     // Mobile: uScroll dirige o parallax; sem giroscópio (spec §4).
     if (window.matchMedia('(pointer: coarse)').matches) {
       const onScroll = () => {
-        uniforms.uScroll.value = Math.min(
-          1,
-          window.scrollY / window.innerHeight,
-        );
+        const u = materialRef.current?.uniforms ?? uniforms;
+        u.uScroll.value = Math.min(1, window.scrollY / window.innerHeight);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       return () => window.removeEventListener('scroll', onScroll);
@@ -93,6 +95,7 @@ export function HeroDepth({ track }: { track: React.RefObject<HTMLElement> }) {
     <mesh scale={[viewport.width, viewport.height, 1]}>
       <planeGeometry args={[1, 1]} />
       <shaderMaterial
+        ref={materialRef}
         vertexShader={heroDepthVertex}
         fragmentShader={heroDepthFragment}
         uniforms={uniforms}

@@ -64,3 +64,20 @@ test('cena do portal renderiza sem erros de shader', async ({ page }) => {
   );
   expect(errors.filter((text) => text.includes('THREE'))).toEqual([]);
 });
+
+test('cena do portal anima continuamente (dois frames diferem)', async ({
+  page,
+}) => {
+  await page.goto('/en');
+  const canvas = page.locator('canvas[aria-hidden="true"]');
+  await expect(canvas).toHaveCount(1, { timeout: 15_000 });
+  await page
+    .locator("section[aria-labelledby='realm-heading']")
+    .scrollIntoViewIfNeeded();
+  await page.waitForTimeout(400);
+  const first = await canvas.screenshot();
+  await page.waitForTimeout(600);
+  const second = await canvas.screenshot();
+  // Anel congelado (bug da Fase 5): frames idênticos. uTime vivo: diferem.
+  expect(first.equals(second)).toBe(false);
+});

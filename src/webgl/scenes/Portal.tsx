@@ -6,6 +6,7 @@
 
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
+import type { ShaderMaterial } from 'three';
 import { useSectionFrameloop } from '@/webgl/useSectionFrameloop';
 import { portalProximity } from '@/webgl/portal-proximity';
 import { portalFragment, portalVertex } from '@/webgl/shaders/portal';
@@ -18,6 +19,11 @@ export function Portal({ track }: { track: React.RefObject<HTMLElement> }) {
   const { viewport } = useThree();
   const hoverTarget = useRef(0);
   const crossedTarget = useRef(0);
+  // O R3F v9 CLONA cada uniform ao aplicar a prop `uniforms` (applyProps:
+  // "uniforms must keep a stable target reference") — mutar o objeto do
+  // useMemo nunca chega ao material (bug do anel congelado da Fase 5). A
+  // mutação por frame precisa mirar os uniforms DO MATERIAL, via ref.
+  const materialRef = useRef<ShaderMaterial>(null);
 
   const uniforms = useMemo(
     () => ({
@@ -31,7 +37,10 @@ export function Portal({ track }: { track: React.RefObject<HTMLElement> }) {
   );
 
   useEffect(() => {
+    // Fonte (clone futuro no mount) + material vivo, se já montado.
+    const u = materialRef.current?.uniforms ?? uniforms;
     uniforms.uAspect.value = viewport.width / viewport.height;
+    u.uAspect.value = uniforms.uAspect.value;
   }, [viewport, uniforms]);
 
   // Hover/focus do botão da travessia dirigem uHover (spec §3). A ponte com o
@@ -76,18 +85,18 @@ export function Portal({ track }: { track: React.RefObject<HTMLElement> }) {
 
   useFrame((state, delta) => {
     // Mutação via ref/uniform dentro de useFrame — nunca estado React.
-    uniforms.uTime.value = state.clock.elapsedTime;
+    // Antes do mount escreve na fonte (o clone nasce fresco); depois, no clone.
+    const u = materialRef.current?.uniforms ?? uniforms;
+    u.uTime.value = state.clock.elapsedTime;
     const rect = track.current.getBoundingClientRect();
-    uniforms.uProximity.value = portalProximity(
+    u.uProximity.value = portalProximity(
       rect.top,
       rect.height,
       window.innerHeight,
     );
     const ease = Math.min(1, delta * EASE_SPEED);
-    uniforms.uHover.value +=
-      (hoverTarget.current - uniforms.uHover.value) * ease;
-    uniforms.uCrossed.value +=
-      (crossedTarget.current - uniforms.uCrossed.value) * ease;
+    u.uHover.value += (hoverTarget.current - u.uHover.value) * ease;
+    u.uCrossed.value += (crossedTarget.current - u.uCrossed.value) * ease;
   });
 
   if (!visible) return null;
@@ -96,6 +105,7 @@ export function Portal({ track }: { track: React.RefObject<HTMLElement> }) {
     <mesh scale={[viewport.width, viewport.height, 1]}>
       <planeGeometry args={[1, 1]} />
       <shaderMaterial
+        ref={materialRef}
         vertexShader={portalVertex}
         fragmentShader={portalFragment}
         uniforms={uniforms}
