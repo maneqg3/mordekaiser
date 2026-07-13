@@ -3,6 +3,18 @@ import { describe, expect, test } from 'vitest';
 import { contrastRatio, relativeLuminance } from '@/lib/contrast';
 
 const WCAG_AA_BODY = 4.5;
+const WCAG_AA_NON_TEXT = 3;
+
+const css = readFileSync('src/styles/tokens.css', 'utf8');
+
+function pair(block: string): { bg: string; fg: string; accent: string } {
+  const bg = block.match(/--bg:\s*(#[0-9a-fA-F]{6})/)?.[1];
+  const fg = block.match(/--fg:\s*(#[0-9a-fA-F]{6})/)?.[1];
+  const accent = block.match(/--accent:\s*(#[0-9a-fA-F]{6})/)?.[1];
+  if (!bg || !fg || !accent)
+    throw new Error(`tokens ausentes no bloco: ${block}`);
+  return { bg, fg, accent };
+}
 
 describe('relativeLuminance', () => {
   test('branco puro tem luminância 1', () => {
@@ -32,15 +44,6 @@ describe('contrastRatio', () => {
 });
 
 describe('tokens dos atos cumprem WCAG AA', () => {
-  const css = readFileSync('src/styles/tokens.css', 'utf8');
-
-  function pair(block: string): { bg: string; fg: string } {
-    const bg = block.match(/--bg:\s*(#[0-9a-fA-F]{6})/)?.[1];
-    const fg = block.match(/--fg:\s*(#[0-9a-fA-F]{6})/)?.[1];
-    if (!bg || !fg) throw new Error(`par --bg/--fg ausente no bloco: ${block}`);
-    return { bg, fg };
-  }
-
   const rootBlock = css.match(/:root\s*\{[^}]*--bg[^}]*\}/)?.[0];
   if (!rootBlock)
     throw new Error('bloco :root com --bg não encontrado em tokens.css');
@@ -58,5 +61,26 @@ describe('tokens dos atos cumprem WCAG AA', () => {
 
   test.each(acts)('ato %s: fg sobre bg ≥ 4.5:1', (_name, { bg, fg }) => {
     expect(contrastRatio(fg, bg)).toBeGreaterThanOrEqual(WCAG_AA_BODY);
+  });
+});
+
+describe("tokens do reino ([data-realm='death']) cumprem WCAG AA", () => {
+  // O seletor do override usa [data-act] SEM valor de propósito: a regex dos
+  // atos acima exige [data-act='x'] e não pode contar o bloco do reino.
+  const realmBlock = css.match(/\[data-realm='death'\][^{]*\{([^}]*)\}/)?.[1];
+  if (!realmBlock)
+    throw new Error("bloco [data-realm='death'] não encontrado em tokens.css");
+  const tokens = pair(realmBlock);
+
+  test('fg sobre bg ≥ 4.5:1', () => {
+    expect(contrastRatio(tokens.fg, tokens.bg)).toBeGreaterThanOrEqual(
+      WCAG_AA_BODY,
+    );
+  });
+
+  test('accent sobre bg ≥ 3:1 (componentes não-texto)', () => {
+    expect(contrastRatio(tokens.accent, tokens.bg)).toBeGreaterThanOrEqual(
+      WCAG_AA_NON_TEXT,
+    );
   });
 });

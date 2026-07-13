@@ -81,6 +81,14 @@
       animation-range: entry 0% entry 100%;
     }
 
+    /* Fase 5: dentro do reino as animações de tokens dos atos cedem — o
+       repaint global de [data-realm='death'] (tokens.css) governa. Animação
+       vence declaração normal na cascata, então sem isto o reino não repinta.
+       Mesma especificidade (0-2-1) das regras acima: a ordem decide. */
+    [data-realm='death'] section[data-act] {
+      animation: none;
+    }
+
     /* Reveal de conteúdo na entrada de cada bloco. */
     .reveal {
       animation: reveal linear both;
