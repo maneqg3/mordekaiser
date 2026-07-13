@@ -5,18 +5,23 @@ import {
   glowIntensity,
   plateShapes,
   plateTransforms,
+  type PlateShape,
 } from '@/webgl/forge-layout';
 
 describe('plateShapes', () => {
-  it('deriva 14 placas afunilando da base ao topo', () => {
+  it('deriva 14 placas com punho fino embaixo e cabeça larga no topo', () => {
     const shapes = plateShapes();
     expect(shapes).toHaveLength(PLATE_COUNT);
-    expect(shapes[0].halfWidthBottom).toBeGreaterThan(
-      shapes.at(-1)!.halfWidthTop,
-    );
     for (const shape of shapes) {
       expect(shape.yTop).toBeGreaterThan(shape.yBottom);
+      expect(shape.halfWidthBottom).toBeGreaterThan(0);
+      expect(shape.halfWidthTop).toBeGreaterThan(0);
     }
+    const widest = (shape: PlateShape) =>
+      Math.max(shape.halfWidthBottom, shape.halfWidthTop);
+    const lower = shapes.slice(0, PLATE_COUNT / 2).map(widest);
+    const upper = shapes.slice(PLATE_COUNT / 2).map(widest);
+    expect(Math.max(...upper)).toBeGreaterThan(Math.max(...lower) * 2);
   });
 
   it('placas não se sobrepõem no eixo y (vão de 15%)', () => {
