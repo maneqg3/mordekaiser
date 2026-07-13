@@ -57,7 +57,9 @@
       "Twice slain and thrice born, he no longer fears the grey waste. He rules it.",
       "By force of will alone, Mordekaiser carved out his own Death Realm — a battlefield in another dimension that exists for him and his prey, and no one else. Those dragged inside face the Iron Revenant utterly alone."
     ],
-    "ultimateLabel": "R — Ultimate"
+    "ultimateLabel": "R — Ultimate",
+    "crossLabel": "Cross over",
+    "returnLabel": "Return"
   },
   "incarnations": {
     "title": "Incarnations",

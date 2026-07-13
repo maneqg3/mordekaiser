@@ -48,8 +48,13 @@ test('/en: arsenal mostra passiva e q/w/e do data dragon', async ({ page }) => {
   }
 });
 
-test('/en: reino da morte mostra o r do data dragon', async ({ page }) => {
+test('/en: reino da morte mostra o r do data dragon após a travessia', async ({
+  page,
+}) => {
   await page.goto('/en');
+  // Fase 5: com JS ativo o card só aparece do outro lado do portal.
+  await expect(page.locator('html')).toHaveAttribute('data-portal-ready', '');
+  await page.getByRole('button', { name: 'Cross over' }).click();
   await expect(
     page.getByRole('heading', { name: en.spells[3].name }),
   ).toBeVisible();

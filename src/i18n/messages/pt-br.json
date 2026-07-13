@@ -57,7 +57,9 @@
       "Duas vezes morto e três vezes nascido, ele não teme mais o descampado cinzento. Ele o governa.",
       "Pela força da vontade, Mordekaiser criou seu próprio Reino da Morte — um campo de batalha em outra dimensão, que existe para ele e sua presa, e para mais ninguém. Quem é arrastado para dentro enfrenta o Revenã de Ferro completamente sozinho."
     ],
-    "ultimateLabel": "R — Suprema"
+    "ultimateLabel": "R — Suprema",
+    "crossLabel": "Atravessar",
+    "returnLabel": "Retornar"
   },
   "incarnations": {
     "title": "Encarnações",
