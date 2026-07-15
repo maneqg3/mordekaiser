@@ -7,6 +7,9 @@ const baseURL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: 'tests/e2e',
+  // SwiftShader + workers paralelos deixam a view transition da travessia
+  // lenta; 5s (default) flakeia sob carga — o atributo chega, só demora.
+  expect: { timeout: 10_000 },
   use: {
     baseURL,
     // Chrome 120+ bloqueia o fallback SwiftShader de WebGL em headless sem esta
