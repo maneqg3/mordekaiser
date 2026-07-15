@@ -142,3 +142,117 @@ html:not([data-portal-ready]) .realm-cta {
   z-index: 0;
   pointer-events: none;
 }
+
+/* ---- Estado do reino, página inteira (Fase 5.1 §3) ---- */
+
+/* Grade de cor: o mundo vivo drenado — imagens dessaturadas com tint verde.
+   Sem transição sob reduced-motion (troca seca, screenshot determinístico). */
+[data-realm='death'] img {
+  filter: grayscale(0.7) sepia(0.35) hue-rotate(85deg) saturate(1.6)
+    brightness(0.9);
+}
+@media (prefers-reduced-motion: no-preference) {
+  img {
+    transition: filter 600ms ease;
+  }
+}
+
+/* Texto assombrado: ghost verde deslocado nos headings. */
+[data-realm='death'] h1,
+[data-realm='death'] h2,
+[data-realm='death'] h3 {
+  text-shadow:
+    2px 0 rgb(82 255 156 / 0.35),
+    -2px 0 rgb(126 255 182 / 0.2);
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-realm='death'] h2 {
+    animation: soul-flicker 7s steps(1) infinite;
+  }
+  @keyframes soul-flicker {
+    0%,
+    92%,
+    96%,
+    100% {
+      opacity: 1;
+    }
+    93% {
+      opacity: 0.75;
+    }
+    94.5% {
+      opacity: 0.9;
+    }
+  }
+}
+
+/* Vinheta estática: base da cúpula que vale SEMPRE dentro do reino (inclusive
+   sem WebGL2 e sob reduced-motion — o shader por cima só adiciona movimento). */
+[data-realm='death'] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 120% 100% at 50% -20%,
+      rgb(82 255 156 / 0.08),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse 150% 60% at 50% 110%,
+      rgb(5 8 7 / 0.9),
+      transparent 55%
+    ),
+    linear-gradient(
+      to right,
+      rgb(82 255 156 / 0.05),
+      transparent 12%,
+      transparent 88%,
+      rgb(82 255 156 / 0.05)
+    );
+}
+
+/* Almas DOM: existem só dentro do reino e com movimento permitido. */
+.souls-layer {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-realm='death'] .souls-layer {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .soul {
+    position: absolute;
+    left: var(--soul-left);
+    bottom: -3vh;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgb(126 255 182 / 0.9);
+    box-shadow: 0 0 6px 2px rgb(82 255 156 / 0.5);
+    transform: scale(var(--soul-scale));
+    animation: soul-rise var(--soul-duration) linear var(--soul-delay) infinite;
+    opacity: 0;
+  }
+  @keyframes soul-rise {
+    0% {
+      transform: translateY(0) scale(var(--soul-scale));
+      opacity: 0;
+    }
+    8% {
+      opacity: 0.9;
+    }
+    85% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(-108vh) scale(var(--soul-scale));
+      opacity: 0;
+    }
+  }
+}
