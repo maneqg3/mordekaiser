@@ -46,7 +46,7 @@ html:not([data-portal-ready]) .realm-cta {
        duas direções (na volta, o mundo morto é cuspido do mesmo jeito). */
     [data-realm='death']::view-transition-old(root),
     :root:not([data-realm='death'])::view-transition-old(root) {
-      animation: portal-suck 900ms cubic-bezier(0.5, 0, 0.75, 0) both;
+      animation: portal-suck 900ms cubic-bezier(0.45, 0, 0.55, 1) both;
       z-index: 1;
       transform-origin: var(--portal-x, 50vw) var(--portal-y, 50vh);
     }
@@ -54,18 +54,18 @@ html:not([data-portal-ready]) .realm-cta {
     :root:not([data-realm='death'])::view-transition-new(root) {
       animation: none;
     }
+    /* Sem filter animado: blur de página inteira re-rasteriza o snapshot a
+       cada frame e trava a sucção — só transform+clip, compositor cuida. */
     @keyframes portal-suck {
       0% {
         clip-path: circle(
           150vmax at var(--portal-x, 50vw) var(--portal-y, 50vh)
         );
         transform: scale(1) rotate(0deg);
-        filter: blur(0) brightness(1);
       }
       100% {
         clip-path: circle(0 at var(--portal-x, 50vw) var(--portal-y, 50vh));
         transform: scale(1.18) rotate(2.5deg);
-        filter: blur(6px) brightness(1.4);
       }
     }
   }
@@ -146,15 +146,12 @@ html:not([data-portal-ready]) .realm-cta {
 /* ---- Estado do reino, página inteira (Fase 5.1 §3) ---- */
 
 /* Grade de cor: o mundo vivo drenado — imagens dessaturadas com tint verde.
-   Sem transição sob reduced-motion (troca seca, screenshot determinístico). */
+   Troca seca de propósito: o crossfade suave é a própria view transition
+   (snapshot novo já nasce filtrado); animar filter em todas as imagens ao
+   mesmo tempo só compete com a sucção e trava o frame. */
 [data-realm='death'] img {
   filter: grayscale(0.7) sepia(0.35) hue-rotate(85deg) saturate(1.6)
     brightness(0.9);
-}
-@media (prefers-reduced-motion: no-preference) {
-  img {
-    transition: filter 600ms ease;
-  }
 }
 
 /* Texto assombrado: ghost verde deslocado nos headings. */

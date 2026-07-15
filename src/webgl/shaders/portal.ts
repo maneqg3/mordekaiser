@@ -62,13 +62,15 @@ export const portalFragment = /* glsl */ `
   void main() {
     vec2 p = (vUv - 0.5) * vec2(uAspect, 1.0);
 
-    // ponytail: constantes de feel — calibrar olhando o portal.
-    float energy = 0.35 + 0.65 * uProximity + 0.4 * uFrenzy;
+    // ponytail: constantes de feel — calibrar olhando o portal. Frenesi é
+    // fumaça difusa (anel mais gordo, pouco brilho extra), não neon — a
+    // referência é o R do Mordekaiser no jogo.
+    float energy = 0.35 + 0.65 * uProximity + 0.12 * uFrenzy;
     float radius = 0.27 + 0.02 * uFrenzy + 0.9 * uCrossed;
-    float width = 0.008 + 0.016 * energy;
+    float width = 0.008 + 0.016 * energy + 0.014 * uFrenzy;
 
     // Aberração cromática: 3 amostras com raios deslocados.
-    float shift = 0.008 + 0.025 * uFrenzy + 0.05 * uCrossed;
+    float shift = 0.008 + 0.008 * uFrenzy + 0.05 * uCrossed;
     float r = ring(p, radius + shift, width);
     float g = ring(p, radius, width);
     float b = ring(p, radius - shift, width);
@@ -86,12 +88,14 @@ export const portalFragment = /* glsl */ `
 
     vec3 color = GREEN * (g + interior) * energy
       + DEEP * interior * 0.6
-      + vec3(r, g * 0.4, b) * 0.3 * energy;
+      + vec3(r, g * 0.4, b) * 0.15 * energy;
     color *= 1.0 - abyss * 0.6;
+    // Frenesi puxa o anel para o verde profundo enevoado em vez de estourar.
+    color = mix(color, DEEP * (0.6 + 0.4 * streams), uFrenzy * 0.35);
     float alpha = clamp(
       (max(r, max(g, b)) + interior + abyss * 0.35 * held) * energy,
       0.0,
-      0.95
+      0.95 - 0.15 * uFrenzy
     );
     gl_FragColor = vec4(color, alpha);
   }
@@ -120,7 +124,7 @@ export const soulsVertex = /* glsl */ `
     vLife = life;
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = (2.0 + 6.0 * (1.0 - life)) * (1.0 + uFrenzy);
+    gl_PointSize = (2.0 + 6.0 * (1.0 - life)) * (1.0 + 0.4 * uFrenzy);
   }
 `;
 
