@@ -22,6 +22,23 @@ export const sceneVisibility = {
 };
 
 /**
+ * Registra uma cena como ativa no contador global de visibilidade enquanto
+ * `active` for true. Cenas fixas à viewport (RealmAmbiance) usam direto;
+ * cenas de seção usam via useSectionFrameloop.
+ */
+export function useSceneActive(active: boolean): void {
+  useEffect(() => {
+    if (!active) return;
+    activeCount += 1;
+    emit();
+    return () => {
+      activeCount -= 1;
+      emit();
+    };
+  }, [active]);
+}
+
+/**
  * true enquanto a seção rastreada está no viewport. As cenas usam isso para
  * montar/desmontar a mesh e liberar (early-return no useFrame) o trabalho
  * pesado quando fora do viewport. Também alimenta o contador que decide o
@@ -42,15 +59,7 @@ export function useSectionFrameloop(
     return () => observer.disconnect();
   }, [track]);
 
-  useEffect(() => {
-    if (!visible) return;
-    activeCount += 1;
-    emit();
-    return () => {
-      activeCount -= 1;
-      emit();
-    };
-  }, [visible]);
+  useSceneActive(visible);
 
   return visible;
 }

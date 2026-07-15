@@ -57,6 +57,7 @@ export default async function LocaleLayout({
           }}
         />
         {children}
+        <div aria-hidden className="realm-ambiance-track" />
         <WebGLMount />
         <SmoothScroll />
       </body>

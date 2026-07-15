@@ -133,3 +133,12 @@ html:not([data-portal-ready]) .realm-cta {
     }
   }
 }
+
+/* Âncora da View fixa da ambientação (a cena RealmAmbiance renderiza na
+   região desta div — a viewport inteira). Nunca intercepta interação. */
+.realm-ambiance-track {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
