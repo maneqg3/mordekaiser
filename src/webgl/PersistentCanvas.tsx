@@ -1,6 +1,6 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { View } from '@react-three/drei';
 import {
   Component,
@@ -16,6 +16,7 @@ import { HeroDepth } from '@/webgl/scenes/HeroDepth';
 import { FluidFog } from '@/webgl/scenes/FluidFog';
 import { Forge } from '@/webgl/scenes/Forge';
 import { Portal } from '@/webgl/scenes/Portal';
+import { RealmAmbiance } from '@/webgl/scenes/RealmAmbiance';
 import { setupForgeScrub } from '@/webgl/forge-scrub';
 
 /** Cena que quebrar (asset 404, shader inválido) vira nada — o site fica. */
@@ -32,11 +33,33 @@ class SceneErrorBoundary extends Component<
   }
 }
 
+/**
+ * Dirige frames com invalidate() num rAF próprio enquanto houver cena visível.
+ * Trocar a prop `frameloop` em runtime ('demand'→'always') não religa o rAF de
+ * forma confiável (bug da Fase 5: anel do portal congelado em um quadro) — com
+ * o driver, o frameloop fica fixo em 'demand' e quem pede quadro somos nós.
+ */
+function FrameDriver({ active }: { active: boolean }) {
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0;
+    const loop = () => {
+      invalidate();
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [active, invalidate]);
+  return null;
+}
+
 export default function PersistentCanvas() {
   const heroTrack = useRef<HTMLElement>(null!);
   const fogTrack = useRef<HTMLElement>(null!);
   const forgeTrack = useRef<HTMLElement>(null!);
   const realmTrack = useRef<HTMLElement>(null!);
+  const ambianceTrack = useRef<HTMLElement>(null!);
   const [tracked, setTracked] = useState(false);
   // 'always' só enquanto alguma cena está no viewport; 'demand' (canvas ocioso)
   // caso contrário — preserva o orçamento de perf fora das seções WebGL.
@@ -59,11 +82,15 @@ export default function PersistentCanvas() {
     const realm = document.querySelector<HTMLElement>(
       "section[aria-labelledby='realm-heading']",
     );
-    if (!hero || !fog || !forge || !realm) return;
+    const ambiance = document.querySelector<HTMLElement>(
+      '.realm-ambiance-track',
+    );
+    if (!hero || !fog || !forge || !realm || !ambiance) return;
     heroTrack.current = hero;
     fogTrack.current = fog;
     forgeTrack.current = forge;
     realmTrack.current = realm;
+    ambianceTrack.current = ambiance;
     // Sync único com DOM externo: as seções são renderizadas pela Fase 2, então
     // é preciso medi-las no mount e então revelar as Views. Sem loop (deps []).
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -85,11 +112,12 @@ export default function PersistentCanvas() {
       // R3F espalha `aria-hidden` no div container; a spec §10 pede o atributo
       // no próprio <canvas>. Marcamos o domElement na criação do renderer.
       onCreated={({ gl }) => gl.domElement.setAttribute('aria-hidden', 'true')}
-      frameloop={activeScenes > 0 ? 'always' : 'demand'}
+      frameloop="demand"
       dpr={[1, 2]}
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}
     >
+      <FrameDriver active={activeScenes > 0} />
       <SceneErrorBoundary>
         <Suspense fallback={null}>
           <View track={heroTrack}>
@@ -103,6 +131,9 @@ export default function PersistentCanvas() {
           </View>
           <View track={realmTrack}>
             <Portal track={realmTrack} />
+          </View>
+          <View track={ambianceTrack}>
+            <RealmAmbiance />
           </View>
         </Suspense>
       </SceneErrorBoundary>

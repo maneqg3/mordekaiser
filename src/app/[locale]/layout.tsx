@@ -3,6 +3,7 @@ import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { blackletter, body, display, mono } from '@/app/fonts';
 import { EntryGate } from '@/components/gate/EntryGate';
+import { SoulsLayer } from '@/components/realm-of-death/SoulsLayer';
 import { SmoothScroll } from '@/components/SmoothScroll';
 import { WebGLMount } from '@/webgl/WebGLMount';
 import { routing } from '@/i18n/routing';
@@ -57,6 +58,8 @@ export default async function LocaleLayout({
           }}
         />
         {children}
+        <div aria-hidden className="realm-ambiance-track" />
+        <SoulsLayer />
         <WebGLMount />
         <SmoothScroll />
       </body>

@@ -122,3 +122,61 @@ test('sem reduced-motion, a travessia passa por startViewTransition', async ({
     )
     .toBeGreaterThan(0);
 });
+
+test('coreografia: impacto → data-realm → reveal, nesta ordem', async ({
+  page,
+}) => {
+  await page.goto('/en');
+  await waitPortalReady(page);
+  const html = page.locator('html');
+  await page.getByRole('button', { name: CROSS.en }).click();
+  // Impacto síncrono no clique.
+  await expect(html).toHaveClass(/realm-impact/);
+  // Cross aos ~300ms (auto-wait do Playwright cobre).
+  await expect(html).toHaveAttribute('data-realm', 'death');
+  // Cúpula aos ~1200ms.
+  await expect(html).toHaveAttribute('data-realm-reveal', '');
+
+  // Volta: reveal cai imediatamente, data-realm aos ~600ms.
+  await page.getByRole('button', { name: 'Return' }).click();
+  await expect(html).not.toHaveAttribute('data-realm-reveal');
+  await expect(html).not.toHaveAttribute('data-realm');
+});
+
+test('reduced-motion: sem impacto e sem reveal — só a troca', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/en');
+  await waitPortalReady(page);
+  const html = page.locator('html');
+  await page.getByRole('button', { name: CROSS.en }).click();
+  await expect(html).toHaveAttribute('data-realm', 'death');
+  await expect(html).not.toHaveClass(/realm-impact/);
+  await expect(html).not.toHaveAttribute('data-realm-reveal');
+});
+
+test('ambientação do reino: segundo passe webgl vivo só dentro do reino', async ({
+  page,
+}) => {
+  await page.goto('/en');
+  await waitPortalReady(page);
+  const canvas = page.locator('canvas[aria-hidden="true"]');
+  await expect(canvas).toHaveCount(1, { timeout: 15_000 });
+
+  await page.getByRole('button', { name: CROSS.en }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-realm-reveal', '');
+  // Cúpula materializada: dois frames do canvas diferem numa seção SEM cena
+  // própria (incarnations) — quem anima ali é só a ambientação fixa. (No topo
+  // não vale: o HeroDepth animaria e mascararia o RED.)
+  await page.evaluate(() =>
+    document
+      .querySelector("[aria-labelledby='incarnations-heading']")
+      ?.scrollIntoView(),
+  );
+  await page.waitForTimeout(900);
+  const first = await canvas.screenshot();
+  await page.waitForTimeout(600);
+  const second = await canvas.screenshot();
+  expect(first.equals(second)).toBe(false);
+});

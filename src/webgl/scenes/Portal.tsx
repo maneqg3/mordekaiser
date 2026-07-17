@@ -5,46 +5,69 @@
    mutação via ref, nunca estado React). */
 
 import { useFrame, useThree } from '@react-three/fiber';
+import { AdditiveBlending } from 'three';
+import type { ShaderMaterial } from 'three';
 import { useEffect, useMemo, useRef } from 'react';
 import { useSectionFrameloop } from '@/webgl/useSectionFrameloop';
 import { portalProximity } from '@/webgl/portal-proximity';
-import { portalFragment, portalVertex } from '@/webgl/shaders/portal';
+import {
+  portalFragment,
+  portalVertex,
+  soulsFragment,
+  soulsVertex,
+} from '@/webgl/shaders/portal';
 
-// Velocidade do lerp de uHover/uCrossed (mesma ordem do HeroDepth).
+// Velocidade do lerp de uFrenzy/uCrossed (mesma ordem do HeroDepth).
 const EASE_SPEED = 5;
+const SOUL_COUNT = 360;
 
 export function Portal({ track }: { track: React.RefObject<HTMLElement> }) {
   const visible = useSectionFrameloop(track);
   const { viewport } = useThree();
-  const hoverTarget = useRef(0);
+  const frenzyTarget = useRef(0);
   const crossedTarget = useRef(0);
+  // O R3F v9 CLONA cada uniform ao aplicar a prop `uniforms` — mutar só o
+  // objeto do useMemo congela o shader (bug da Fase 5). A fonte é a verdade;
+  // o useFrame replica os valores nos clones dos dois materiais via ref.
+  const ringMaterial = useRef<ShaderMaterial>(null);
+  const soulsMaterial = useRef<ShaderMaterial>(null);
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uProximity: { value: 0 },
-      uHover: { value: 0 },
+      uFrenzy: { value: 0 },
       uCrossed: { value: 0 },
       uAspect: { value: 1 },
     }),
     [],
   );
 
+  // Sementes determinísticas das almas (hash de Knuth por índice) + posições
+  // zeradas exigidas pelo three (a posição real nasce no vertex shader).
+  const soulSeeds = useMemo(() => {
+    const seeds = new Float32Array(SOUL_COUNT);
+    for (let i = 0; i < SOUL_COUNT; i += 1) {
+      seeds[i] = (((i + 1) * 2654435761) % 4294967296) / 4294967296;
+    }
+    return seeds;
+  }, []);
+  const soulPositions = useMemo(() => new Float32Array(SOUL_COUNT * 3), []);
+
   useEffect(() => {
     uniforms.uAspect.value = viewport.width / viewport.height;
   }, [viewport, uniforms]);
 
-  // Hover/focus do botão da travessia dirigem uHover (spec §3). A ponte com o
-  // DOM é o atributo [data-realm-cta] — zero estado React global.
+  // Hover/focus do botão dirigem uFrenzy. Ponte com o DOM: [data-realm-cta].
   useEffect(() => {
     const button =
       document.querySelector<HTMLButtonElement>('[data-realm-cta]');
     if (!button) return;
     const on = () => {
-      hoverTarget.current = 1;
+      frenzyTarget.current = 1;
     };
     const off = () => {
-      hoverTarget.current = 0;
+      frenzyTarget.current = 0;
     };
     button.addEventListener('pointerenter', on);
     button.addEventListener('pointerleave', off);
@@ -84,24 +107,53 @@ export function Portal({ track }: { track: React.RefObject<HTMLElement> }) {
       window.innerHeight,
     );
     const ease = Math.min(1, delta * EASE_SPEED);
-    uniforms.uHover.value +=
-      (hoverTarget.current - uniforms.uHover.value) * ease;
+    uniforms.uFrenzy.value +=
+      (frenzyTarget.current - uniforms.uFrenzy.value) * ease;
     uniforms.uCrossed.value +=
       (crossedTarget.current - uniforms.uCrossed.value) * ease;
+    // Replica a fonte nos clones vivos (materiais montados).
+    for (const material of [ringMaterial.current, soulsMaterial.current]) {
+      if (!material) continue;
+      for (const key of Object.keys(uniforms) as (keyof typeof uniforms)[]) {
+        material.uniforms[key].value = uniforms[key].value;
+      }
+    }
   });
 
   if (!visible) return null;
 
   return (
-    <mesh scale={[viewport.width, viewport.height, 1]}>
-      <planeGeometry args={[1, 1]} />
-      <shaderMaterial
-        vertexShader={portalVertex}
-        fragmentShader={portalFragment}
-        uniforms={uniforms}
-        transparent
-        depthTest={false}
-      />
-    </mesh>
+    <group scale={[viewport.width, viewport.height, 1]}>
+      <mesh>
+        <planeGeometry args={[1, 1]} />
+        <shaderMaterial
+          ref={ringMaterial}
+          vertexShader={portalVertex}
+          fragmentShader={portalFragment}
+          uniforms={uniforms}
+          transparent
+          depthTest={false}
+        />
+      </mesh>
+      <points>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[soulPositions, 3]}
+          />
+          <bufferAttribute attach="attributes-aSeed" args={[soulSeeds, 1]} />
+        </bufferGeometry>
+        <shaderMaterial
+          ref={soulsMaterial}
+          vertexShader={soulsVertex}
+          fragmentShader={soulsFragment}
+          uniforms={uniforms}
+          transparent
+          depthTest={false}
+          depthWrite={false}
+          blending={AdditiveBlending}
+        />
+      </points>
+    </group>
   );
 }
