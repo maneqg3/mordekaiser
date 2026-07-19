@@ -7,6 +7,7 @@ import {
   type RealmPhase,
 } from '@/lib/realm-choreography';
 import { applyRealmTransition } from '@/lib/realm-transition';
+import { getAudio } from '@/lib/audio';
 
 export type RealmGatewayLabels = { cross: string; return: string };
 
@@ -36,6 +37,13 @@ export function RealmGateway({ labels }: { labels: RealmGatewayLabels }) {
       html.style.setProperty('--portal-y', `${rect.top + rect.height / 2}px`);
     }
     const next = !isInRealm;
+    if (next) {
+      // Spec Fase 6 §1.4: SFX do R + "Sucumba" juntos na entrada;
+      // travessia reversa é silêncio deliberado.
+      const audio = getAudio();
+      audio.playCue('r-sfx');
+      audio.playCue('sucumba');
+    }
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches;
