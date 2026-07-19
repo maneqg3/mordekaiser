@@ -1,11 +1,14 @@
 import { getTranslations } from 'next-intl/server';
+import type { CueName } from '@/data/audio-manifest';
 import type { ChampionData } from '@/lib/ddragon';
+import { AbilityCue } from './AbilityCue';
 
 type Ability = {
   label: string;
   name: string;
   description: string;
   icon: string;
+  cue: CueName;
   cooldown?: string;
   cost?: string;
   range?: string;
@@ -16,9 +19,11 @@ export async function Arsenal({ champion }: { champion: ChampionData }) {
   const [q, w, e] = champion.spells;
   const toAbility = (
     label: string,
+    cue: CueName,
     spell: ChampionData['spells'][number],
   ): Ability => ({
     label,
+    cue,
     name: spell.name,
     description: spell.description,
     icon: spell.icon,
@@ -29,13 +34,14 @@ export async function Arsenal({ champion }: { champion: ChampionData }) {
   const abilities: Ability[] = [
     {
       label: t('passiveLabel'),
+      cue: 'passive',
       name: champion.passive.name,
       description: champion.passive.description,
       icon: champion.passive.icon,
     },
-    toAbility(t('qLabel'), q),
-    toAbility(t('wLabel'), w),
-    toAbility(t('eLabel'), e),
+    toAbility(t('qLabel'), 'q', q),
+    toAbility(t('wLabel'), 'w', w),
+    toAbility(t('eLabel'), 'e', e),
   ];
 
   return (
@@ -51,7 +57,10 @@ export async function Arsenal({ champion }: { champion: ChampionData }) {
         <div className="grid gap-6 sm:grid-cols-2">
           {abilities.map((ability) => (
             <article key={ability.name} className="ability-card flex flex-col gap-3 p-6">
-              <div className="flex items-center gap-4">
+              <AbilityCue
+                cue={ability.cue}
+                label={t('hear', { name: ability.name })}
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element -- next/image estoura o teto de bundle (spec §9) */}
                 <img
                   src={`/champion/${ability.icon}`}
@@ -65,7 +74,7 @@ export async function Arsenal({ champion }: { champion: ChampionData }) {
                   <p className="act-kicker">{ability.label}</p>
                   <h3 className="type-display text-xl">{ability.name}</h3>
                 </div>
-              </div>
+              </AbilityCue>
               <p className="opacity-90">{ability.description}</p>
               {ability.cooldown !== undefined && (
                 <dl className="type-mono flex flex-wrap gap-x-6 gap-y-1 text-sm opacity-80">

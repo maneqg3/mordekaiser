@@ -1,9 +1,22 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { getAudio } from '@/lib/audio';
 
 const STORAGE_KEY = 'mordekaiser:sound';
+
+/* localStorage é sistema externo: lido via useSyncExternalStore (SSR-safe,
+   sem setState em effect). O próprio toggle é o único escritor. */
+const armedListeners = new Set<() => void>();
+const readArmed = () => localStorage.getItem(STORAGE_KEY) === 'on';
+const subscribeArmed = (cb: () => void) => {
+  armedListeners.add(cb);
+  return () => armedListeners.delete(cb);
+};
+const writeArmed = (on: boolean) => {
+  localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off');
+  for (const cb of armedListeners) cb();
+};
 
 export type SoundToggleLabels = { enable: string; disable: string };
 
@@ -21,11 +34,7 @@ export function SoundToggle({ labels }: { labels: SoundToggleLabels }) {
     () => 'idle' as const,
   );
   const isOn = state === 'playing' || state === 'armed';
-  const [armed, setArmed] = useState(false);
-
-  useEffect(() => {
-    setArmed(localStorage.getItem(STORAGE_KEY) === 'on');
-  }, []);
+  const armed = useSyncExternalStore(subscribeArmed, readArmed, () => false);
 
   useEffect(() => {
     const onVisibility = () => {
@@ -39,12 +48,10 @@ export function SoundToggle({ labels }: { labels: SoundToggleLabels }) {
   const toggle = () => {
     if (isOn) {
       audio.disable();
-      localStorage.setItem(STORAGE_KEY, 'off');
-      setArmed(false);
+      writeArmed(false);
     } else {
       audio.enable();
-      localStorage.setItem(STORAGE_KEY, 'on');
-      setArmed(true);
+      writeArmed(true);
     }
   };
 

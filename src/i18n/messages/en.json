@@ -48,7 +48,8 @@
     "eLabel": "E",
     "cooldownLabel": "Cooldown",
     "costLabel": "Cost",
-    "rangeLabel": "Range"
+    "rangeLabel": "Range",
+    "hear": "Hear {name}"
   },
   "realm": {
     "kicker": "Act IV",

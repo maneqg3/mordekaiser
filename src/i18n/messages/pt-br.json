@@ -48,7 +48,8 @@
     "eLabel": "E",
     "cooldownLabel": "Recarga",
     "costLabel": "Custo",
-    "rangeLabel": "Alcance"
+    "rangeLabel": "Alcance",
+    "hear": "Ouvir {name}"
   },
   "realm": {
     "kicker": "Ato IV",
