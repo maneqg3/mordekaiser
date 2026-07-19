@@ -9,7 +9,8 @@ out/
 # gerado offline por scripts/generate-depth.ts e versionado (spec Fase 3 §2).
 public/champion/*
 !public/champion/depth-0.webp
-src/data/
+src/data/*
+!src/data/audio-manifest.ts
 
 # saída de testes
 coverage/
