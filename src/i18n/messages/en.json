@@ -61,6 +61,10 @@
     "crossLabel": "Cross over",
     "returnLabel": "Return"
   },
+  "sound": {
+    "enable": "Sound on",
+    "disable": "Sound off"
+  },
   "incarnations": {
     "title": "Incarnations",
     "subtitle": "Fourteen forms of the Iron Revenant."

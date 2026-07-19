@@ -112,3 +112,30 @@
 .skin-card[aria-pressed='true'] {
   border-color: var(--accent);
 }
+
+/* Botão de som (Fase 6): persistente, canto inferior direito, sempre visível. */
+.sound-toggle {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.6rem 1rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: color-mix(in oklab, var(--bg) 82%, black);
+  border: 1px solid color-mix(in oklab, var(--fg) 30%, transparent);
+  cursor: pointer;
+}
+.sound-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.sound-toggle[aria-pressed='true'],
+.sound-toggle[data-armed] {
+  border-color: var(--accent);
+  color: var(--accent);
+}

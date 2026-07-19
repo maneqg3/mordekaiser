@@ -61,6 +61,10 @@
     "crossLabel": "Atravessar",
     "returnLabel": "Retornar"
   },
+  "sound": {
+    "enable": "Ligar som",
+    "disable": "Desligar som"
+  },
   "incarnations": {
     "title": "Encarnações",
     "subtitle": "Quatorze formas do Revenã de Ferro."
