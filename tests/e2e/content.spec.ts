@@ -76,9 +76,10 @@ for (const locale of ['en', 'pt-br']) {
 
 test('/en: galeria tem 14 skins nomeadas', async ({ page }) => {
   await page.goto('/en');
-  const figures = page.locator(
-    'section[aria-labelledby="incarnations-heading"] figure',
+  // Fase 6: cards viraram botões de skin (repintura via data-skin).
+  const cards = page.locator(
+    'section[aria-labelledby="incarnations-heading"] button.skin-card',
   );
-  await expect(figures).toHaveCount(14);
-  await expect(figures.first()).toContainText('Mordekaiser');
+  await expect(cards).toHaveCount(14);
+  await expect(cards.first()).toContainText('Mordekaiser');
 });

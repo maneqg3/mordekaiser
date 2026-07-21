@@ -5,6 +5,7 @@ import { blackletter, body, display, mono } from '@/app/fonts';
 import { EntryGate } from '@/components/gate/EntryGate';
 import { SoulsLayer } from '@/components/realm-of-death/SoulsLayer';
 import { SmoothScroll } from '@/components/SmoothScroll';
+import { SoundToggle } from '@/components/ui/SoundToggle';
 import { WebGLMount } from '@/webgl/WebGLMount';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
@@ -39,6 +40,7 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'gate' });
+  const tSound = await getTranslations({ locale, namespace: 'sound' });
 
   return (
     <html
@@ -58,6 +60,9 @@ export default async function LocaleLayout({
           }}
         />
         {children}
+        <SoundToggle
+          labels={{ enable: tSound('enable'), disable: tSound('disable') }}
+        />
         <div aria-hidden className="realm-ambiance-track" />
         <SoulsLayer />
         <WebGLMount />

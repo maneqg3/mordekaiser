@@ -16,6 +16,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # contrast.test.ts (fase 6) cruza as paletas de skin contra os splashes de
+      # public/champion, que sao gitignored e nascem no fetch. Sem build aqui, o
+      # unit precisa do fetch pra ter os arquivos.
+      - run: pnpm fetch:ddragon
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test:coverage

@@ -48,7 +48,8 @@
     "eLabel": "E",
     "cooldownLabel": "Recarga",
     "costLabel": "Custo",
-    "rangeLabel": "Alcance"
+    "rangeLabel": "Alcance",
+    "hear": "Ouvir {name}"
   },
   "realm": {
     "kicker": "Ato IV",
@@ -60,6 +61,10 @@
     "ultimateLabel": "R — Suprema",
     "crossLabel": "Atravessar",
     "returnLabel": "Retornar"
+  },
+  "sound": {
+    "enable": "Ligar som",
+    "disable": "Desligar som"
   },
   "incarnations": {
     "title": "Encarnações",

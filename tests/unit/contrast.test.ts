@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { contrastRatio, relativeLuminance } from '@/lib/contrast';
 
@@ -82,5 +82,36 @@ describe("tokens do reino ([data-realm='death']) cumprem WCAG AA", () => {
     expect(contrastRatio(tokens.accent, tokens.bg)).toBeGreaterThanOrEqual(
       WCAG_AA_NON_TEXT,
     );
+  });
+});
+
+describe('paletas de skin (fase 6)', () => {
+  const skinBlocks = [
+    ...css.matchAll(/html\[data-skin='(\d+)'\][^{]*\{([^}]+)\}/g),
+  ];
+
+  test('há um bloco por splash em public/champion', () => {
+    const splashNums = readdirSync('public/champion')
+      .map((f) => /^splash-(\d+)\.jpg$/.exec(f)?.[1])
+      .filter((n): n is string => n !== undefined)
+      .sort((a, b) => Number(a) - Number(b));
+    const cssNums = skinBlocks
+      .map((m) => m[1])
+      .sort((a, b) => Number(a) - Number(b));
+    expect(cssNums).toEqual(splashNums);
+  });
+
+  test('todo par de skin passa WCAG AA', () => {
+    for (const block of skinBlocks) {
+      const { bg, fg, accent } = pair(block[2]);
+      expect(
+        contrastRatio(fg, bg),
+        `skin ${block[1]} fg/bg`,
+      ).toBeGreaterThanOrEqual(WCAG_AA_BODY);
+      expect(
+        contrastRatio(accent, bg),
+        `skin ${block[1]} accent/bg`,
+      ).toBeGreaterThanOrEqual(WCAG_AA_NON_TEXT);
+    }
   });
 });

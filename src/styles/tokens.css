@@ -51,3 +51,92 @@
   --fg: #e8f2ec;
   --accent: #52ff9c;
 }
+
+/* Encarnações (Fase 6): skin selecionada repinta a página inteira.
+   html[data-skin] [data-act] (0-2-1) vence [data-realm='death'] [data-act]
+   (0-2-0); a posição no fim do arquivo desempata o resto. Paletas curadas à
+   mão a partir das splashes; contraste AA garantido por teste. */
+html[data-skin='0'],
+html[data-skin='0'] [data-act] {
+  --bg: #0b0d0c;
+  --fg: #dfe8e2;
+  --accent: #7effb6;
+}
+html[data-skin='1'],
+html[data-skin='1'] [data-act] {
+  --bg: #120b09;
+  --fg: #e8d9c8;
+  --accent: #ff7a45;
+}
+html[data-skin='2'],
+html[data-skin='2'] [data-act] {
+  --bg: #140806;
+  --fg: #f2ddc9;
+  --accent: #ff9538;
+}
+html[data-skin='3'],
+html[data-skin='3'] [data-act] {
+  --bg: #0b0b0d;
+  --fg: #e6e6ea;
+  --accent: #c9cdd6;
+}
+html[data-skin='4'],
+html[data-skin='4'] [data-act] {
+  --bg: #100d07;
+  --fg: #ece0c4;
+  --accent: #ffc94d;
+}
+html[data-skin='5'],
+html[data-skin='5'] [data-act] {
+  --bg: #0a0f0a;
+  --fg: #dfe8d8;
+  --accent: #7ddb6a;
+}
+html[data-skin='6'],
+html[data-skin='6'] [data-act] {
+  --bg: #0c0d10;
+  --fg: #dde3ee;
+  --accent: #8fb6ff;
+}
+html[data-skin='13'],
+html[data-skin='13'] [data-act] {
+  --bg: #0a0714;
+  --fg: #e3dcf2;
+  --accent: #b48bff;
+}
+html[data-skin='23'],
+html[data-skin='23'] [data-act] {
+  --bg: #081018;
+  --fg: #d8e6f2;
+  --accent: #57c7ff;
+}
+html[data-skin='32'],
+html[data-skin='32'] [data-act] {
+  --bg: #0b100b;
+  --fg: #dce8d2;
+  --accent: #9edd63;
+}
+html[data-skin='42'],
+html[data-skin='42'] [data-act] {
+  --bg: #120808;
+  --fg: #efdcd2;
+  --accent: #ff5c33;
+}
+html[data-skin='44'],
+html[data-skin='44'] [data-act] {
+  --bg: #0e0714;
+  --fg: #ecdcf5;
+  --accent: #d96bff;
+}
+html[data-skin='54'],
+html[data-skin='54'] [data-act] {
+  --bg: #0d0b12;
+  --fg: #e8e2f0;
+  --accent: #ffd76b;
+}
+html[data-skin='55'],
+html[data-skin='55'] [data-act] {
+  --bg: #120e08;
+  --fg: #f0e6d0;
+  --accent: #ffcf4d;
+}
