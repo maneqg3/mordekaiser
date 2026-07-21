@@ -10,6 +10,10 @@ export default defineConfig({
   // SwiftShader + workers paralelos deixam a view transition da travessia
   // lenta; 5s (default) flakeia sob carga — o atributo chega, só demora.
   expect: { timeout: 10_000 },
+  // No CI, SwiftShader emulado sob workers paralelos causa contenção de GPU: as
+  // cenas WebGL/view-transition flakeiam de forma não-determinística (a suite
+  // passa 50/50 serial, falha 3-4 em paralelo). workers=1 remove a causa.
+  workers: process.env.CI ? 1 : undefined,
   use: {
     baseURL,
     // Chrome 120+ bloqueia o fallback SwiftShader de WebGL em headless sem esta
